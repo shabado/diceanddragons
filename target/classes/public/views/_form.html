@@ -1,0 +1,104 @@
+<div class="form-group">
+    <label for="name" class="col-sm-2 control-label">Name</label>
+    <div class="col-sm-10">
+        <input type="text" required ng-model="spell.name" class="form-control" id="name" placeholder="Spell Name"/>
+    </div>
+</div>
+<div class="form-group">
+    <label for="spellLevel" class="col-sm-2 control-label">Spell Level</label>
+    <div class="col-sm-10">
+        <select required ng-model="spell.spellLevel" class="form-control" id="spellLevel">
+            <option ng-selected="true" value="" disabled hidden>Select Spell Level</option>
+            <option>Cantrip</option>
+            <option>Level 1</option>
+            <option>Level 2</option>
+            <option>Level 3</option>
+            <option>Level 4</option>
+            <option>Level 5</option>
+            <option>Level 6</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label for="description" class="col-sm-2 control-label">Description</label>
+    <div class="col-sm-10">
+        <textarea name="description" rows="10" cols="10" ng-model="spell.description" class="form-control" id="description" placeholder="Spell Description"></textarea>
+    </div>
+</div>
+<div class="form-group">
+    <label for="damageType" class="col-sm-2 control-label">Damage Type</label>
+    <div class="col-sm-10">
+        <select required ng-model="spell.damageType" class="form-control" id="damageType">
+            <option ng-selected="true" value="" disabled hidden>Select Damage Type</option>
+            <option>N/A</option>
+            <option>Fire</option>
+            <option>Force</option>
+            <option>Frost</option>
+            <option>Physical</option>
+            <option>Necrotic</option>
+            <option>Radiant</option>
+            <option>Thunder</option>
+        </select>
+    </div>
+</div>
+<div class="form-group form-row">
+    <label for="damage" class="col-sm-2 control-label">Damage</label>
+        <div id="damage">
+            <div class="col-sm-2">
+            <input class="form-control" oninput="this.value = this.value.replace(/[^0-9]/, '')"
+                   type="text" pattern="[0-9]" ng-model="spell.damage.diceNumber" id="damageNumber" placeholder="No. of Dice"/>
+        </div>
+        <div class="col-sm-8">
+            <select class="form-control" ng-model="spell.damage.damageDice" id="damageDice">
+                <option ng-selected="true" value="">Select Damage Dice</option>
+                <option>d4</option>
+                <option>d6</option>
+                <option>d8</option>
+                <option>d10</option>
+                <option>d12</option>
+                <option>d20</option>
+                <option>d100</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label for="characterClasses" class="col-sm-2 control-label">Classes</label>
+    <div class="col-sm-10" id="characterClasses">
+    <multiselect ng-model="spell.spellClasses" options="classes" placeholder="Select Classes">
+    </multiselect>
+    </div>
+</div>
+<div class="form-group">
+    <label for="castingTime" class="col-sm-2 control-label">Casting Time</label>
+    <div class="col-sm-10">
+        <input type="text" ng-model="spell.castingTime" class="form-control" id="castingTime" placeholder="Casting Time"/>
+    </div>
+</div>
+<div class="form-group">
+    <label for="components" class="col-sm-2 control-label">Components</label>
+    <div class="col-sm-10">
+        <input type="text" ng-model="spell.components" class="form-control" id="components" placeholder="Components"/>
+    </div>
+</div>
+<div class="form-group form-row">
+    <label for="duration" class="col-sm-2 control-label">Duration</label>
+    <div class="col-sm-4">
+        <input class="form-control" type="text" ng-model="spell.duration" class="form-control" id="duration" placeholder="Spell duration"/>
+    </div>
+    <div class="col-sm-5">
+        <label for="concentration" class="form-check-label">Concentration?</label>
+        <input class="form-check-input" type="checkbox" ng-model="spell.concentration" id="concentration"/>
+    </div>
+</div>
+<div class="form-group">
+    <label for="range" class="col-sm-2 control-label">Range</label>
+    <div class="col-sm-10">
+        <input type="text" ng-model="spell.range" class="form-control" id="range" placeholder="Range of spell"/>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <input type="submit" class="btn btn-primary" value="Save"/>
+    </div>
+</div>

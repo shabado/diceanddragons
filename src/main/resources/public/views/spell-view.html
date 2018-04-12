@@ -1,0 +1,46 @@
+<div class="container pad-top">
+  <table class="table spelltable">
+      <h3>Details for {{spell.name}}</h3>
+      <tr>
+          <td class="col-sm-4">Name</td>
+          <td>{{spell.name}}</td>
+      </tr>
+      <tr>
+          <td>Spell Level</td>
+          <td>{{spell.spellLevel}}</td>
+      </tr>
+      <tr>
+          <td colspan=2>Description</td>
+      </tr>
+      <tr>
+          <td style="white-space:pre-wrap" colspan=2>{{spell.description}}</td>
+      </tr>
+      <tr>
+          <td>Damage Type</td>
+          <td>{{spell.damageType}}</td>
+      </tr>
+      <tr>
+          <td>Base Damage</td>
+          <td>{{spell.damage.diceNumber}}{{spell.damage.damageDice}}</td>
+      </tr>
+      <tr>
+          <td>Casting Time</td>
+          <td>{{spell.castingTime}}</td>
+      </tr>
+      <tr>
+          <td>Components</td>
+          <td>{{spell.components}}</td>
+      </tr>
+      <tr>
+          <td>Duration</td>
+          <td>{{spell.duration}}{{spell.concentration?', Concentration':''}}</td>
+      </tr>
+      <tr>
+          <td>Range</td>
+          <td>{{spell.range}}</td>
+      </tr>
+  </table>
+  <div>
+      <a class="btn btn-primary" ui-sref="editSpell({id:spell.id})">Edit</a>
+  </div>
+</div>

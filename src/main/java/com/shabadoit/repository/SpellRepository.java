@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface SpellRepository extends MongoRepository<Spell, String> {
 
-    List<Spell> findByName(@Param("name") String name);
+    Spell findByName(@Param("name") String name);
     void deleteById(@Param("id") String id);
 }

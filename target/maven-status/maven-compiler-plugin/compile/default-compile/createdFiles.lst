@@ -1,6 +1,0 @@
-com\shabadoit\App.class
-com\shabadoit\controller\SpellController.class
-com\shabadoit\controller\SpellStub.class
-com\shabadoit\controller\HomeContoller.class
-com\shabadoit\model\Spell.class
-com\shabadoit\repository\SpellRepository.class

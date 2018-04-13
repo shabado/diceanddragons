@@ -16,7 +16,6 @@ import java.util.List;
 @Document(collection = "spells")
 public class Spell {
     @Id
-    @NonNull
     private String id;
     @NonNull
     private SpellLevel spellLevel;

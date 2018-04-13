@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,24 +35,26 @@ public class SpellsRestIT {
     private TestRestTemplate testRestTemplate;
 
     private List<Spell> spells;
-    private final String firstId = "Id";
-    private final String secondId = "Id2";
     private final String firstName = "name1";
     private final String secondName = "name2";
-    private final Spell firstSpell;
-    private final Spell secondSpell;
+    private Spell firstSpell;
+    private Spell secondSpell;
 
-    public SpellsRestIT() {
-        firstSpell = new Spell(firstId, SpellLevel.LEVEL1, firstName);
-        secondSpell = new Spell(secondId, SpellLevel.LEVEL1, secondName);
-    }
 
     @Before
     public void setUp() {
-        Spell firstSpell = new Spell(firstId, SpellLevel.LEVEL1, firstName);
-        Spell secondSpell = new Spell(secondId, SpellLevel.LEVEL1, secondName);
-        spells = new ArrayList<>(Arrays.asList(firstSpell, secondSpell));
-        spellRepository.insert(spells);
+        spells = new ArrayList<>(Arrays.asList(new Spell(SpellLevel.LEVEL1, firstName), new Spell(SpellLevel.LEVEL1, secondName)));
+        List<Spell> insertedSpells = spellRepository.insert(spells);
+        firstSpell = insertedSpells.get(0);
+        secondSpell = insertedSpells.get(1);
+    }
+
+    @Test
+    public void can_add_new_spell() {
+        Spell newSpell = new Spell(SpellLevel.LEVEL1, "New spell");
+        ResponseEntity<Spell> response = testRestTemplate.postForEntity("/api/v1/spells", newSpell, Spell.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody().getId());
     }
 
     @Test
@@ -57,4 +62,18 @@ public class SpellsRestIT {
         ResponseEntity response = testRestTemplate.postForEntity("/api/v1/spells", firstSpell, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
+
+    @Test
+    public void returns_all_spells() {
+        ResponseEntity<Spell[]> response = testRestTemplate.getForEntity("/api/v1/spells", Spell[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(spells, containsInAnyOrder(response.getBody()));
+    }
+
+    //Duplicate Id throws 400
+    //Get by Id
+    //Get by name
+    //Update
+    //Delete
+    //Failed update if params dont match
 }

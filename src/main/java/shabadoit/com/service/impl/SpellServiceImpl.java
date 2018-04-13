@@ -1,13 +1,13 @@
 package shabadoit.com.service.impl;
 
-import shabadoit.com.exceptions.SpellManagementException;
-import shabadoit.com.repository.SpellRepository;
-import shabadoit.com.model.spell.Spell;
-import shabadoit.com.service.SpellService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import shabadoit.com.exceptions.SpellManagementException;
+import shabadoit.com.model.spell.Spell;
+import shabadoit.com.repository.SpellRepository;
+import shabadoit.com.service.SpellService;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +21,14 @@ public class SpellServiceImpl implements SpellService {
     @Autowired
     private SpellRepository spellRepository;
 
-    public void addSpell(Spell spell) {
+    public Spell addSpell(Spell spell) {
         if (getByName(spell.getName()) != null) {
             throw new SpellManagementException("Spell with name " + spell.getName() + " already exists");
         }
-        spellRepository.insert(spell);
+        if (spell.getId() != null && getById(spell.getId()) != null) {
+            throw new SpellManagementException("Spell with Id " + spell.getId() + " already exists");
+        }
+        return spellRepository.insert(spell);
     }
 
     @Override
@@ -40,10 +43,10 @@ public class SpellServiceImpl implements SpellService {
     }
 
     @Override
-    public void updateById(String id, Spell spell) {
+    public Spell updateById(String id, Spell spell) {
         if (getById(id) != null) {
             if (id.equals(spell.getId())) {
-                spellRepository.save(spell);
+                return spellRepository.save(spell);
             } else {
                 throw new SpellManagementException("Supplied spell Ids do not match, unable to update");
             }

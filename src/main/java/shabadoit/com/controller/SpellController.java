@@ -28,19 +28,19 @@ public class SpellController {
         return spellService.getById(id);
     }
 
-    @RequestMapping("spells/{name}")
+    @RequestMapping("spells/name={name}")
     public Spell getByName(@PathVariable("name") String name){
         return spellService.getByName(name);
     }
 
     @RequestMapping(value = "spells", method = RequestMethod.POST)
-    public void create(@RequestBody Spell spell) {
-        spellService.addSpell(spell);
+    public Spell create(@RequestBody Spell spell) {
+        return spellService.addSpell(spell);
     }
 
     @RequestMapping(value = "spells/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable String id, @RequestBody Spell spell) {
-        spellService.updateById(id, spell);
+    public Spell update(@PathVariable String id, @RequestBody Spell spell) {
+        return spellService.updateById(id, spell);
     }
 
     @RequestMapping(value = "spells/{id}", method = RequestMethod.DELETE)

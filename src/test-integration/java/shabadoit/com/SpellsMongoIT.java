@@ -39,25 +39,18 @@ public class SpellsMongoIT {
     private SpellController spellController;
 
     private List<Spell> spells;
-    private final String firstId = "Id";
-    private final String secondId = "Id2";
     private final String firstName = "name1";
     private final String secondName = "name2";
-    private final Spell firstSpell;
-    private final Spell secondSpell;
-
-    public SpellsMongoIT() {
-        firstSpell = new Spell(firstId, SpellLevel.LEVEL1, firstName);
-        secondSpell = new Spell(secondId, SpellLevel.LEVEL1, secondName);
-    }
+    private Spell firstSpell;
+    private Spell secondSpell;
 
 
     @Before
     public void setUp() {
-        Spell firstSpell = new Spell(firstId, SpellLevel.LEVEL1, firstName);
-        Spell secondSpell = new Spell(secondId, SpellLevel.LEVEL1, secondName);
-        spells = new ArrayList<>(Arrays.asList(firstSpell, secondSpell));
-        spellRepository.insert(spells);
+        spells = new ArrayList<>(Arrays.asList(new Spell(SpellLevel.LEVEL1, firstName), new Spell(SpellLevel.LEVEL1, secondName)));
+        List<Spell> insertedSpells = spellRepository.insert(spells);
+        firstSpell = insertedSpells.get(0);
+        secondSpell = insertedSpells.get(1);
     }
 
     @Test
@@ -69,7 +62,7 @@ public class SpellsMongoIT {
 
     @Test
     public void should_return_spell_by_Id() {
-        Spell spell = spellController.getById(firstId);
+        Spell spell = spellController.getById(firstSpell.getId());
 
         assertEquals(firstSpell, spell);
     }
@@ -83,33 +76,34 @@ public class SpellsMongoIT {
 
     @Test
     public void should_delete_spell() {
-        spellController.delete(firstId);
+        spellController.delete(firstSpell.getId());
 
         List<Spell> expectedSpells = new ArrayList<>(Arrays.asList(secondSpell));
 
-        assertNull(spellController.getById(firstId));
+        assertNull(spellController.getById(firstSpell.getId()));
         assertEquals(expectedSpells, spellController.list());
     }
 
     @Test
     public void should_update_spell() {
-        Spell updatedSpell = new Spell(firstSpell.getId(), firstSpell.getSpellLevel(), firstSpell.getName());
+        Spell updatedSpell = new Spell(firstSpell.getSpellLevel(), firstSpell.getName());
         updatedSpell.setName("New name");
         updatedSpell.setConcentration(true);
+        updatedSpell.setId(firstSpell.getId());
 
-        spellController.update(firstId, updatedSpell);
+        spellController.update(firstSpell.getId(), updatedSpell);
 
-        assertEquals(updatedSpell, spellController.getById(firstId));
+        assertEquals(updatedSpell, spellController.getById(firstSpell.getId()));
     }
 
     @Test()
-    public void should_500_when_Ids_differ() {
+    public void should_throw_when_Ids_differ() {
         exception.expect(SpellManagementException.class);
-        spellController.update(secondId, firstSpell);
+        spellController.update(secondSpell.getId(), firstSpell);
     }
 
     @Test()
-    public void should_error_if_adding_with_same_name() {
+    public void should_throw_if_adding_with_same_name() {
         exception.expect(SpellManagementException.class);
         spellController.create(firstSpell);
     }

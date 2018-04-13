@@ -36,7 +36,8 @@ public class SpellControllerTest {
     public void should_get_spell_by_id() {
         //Given
         String id = "Id";
-        Spell existingSpell = new Spell(id, SpellLevel.LEVEL1, "Name");
+        Spell existingSpell = new Spell(SpellLevel.LEVEL1, "Name");
+        existingSpell.setId(id);
 
         //When
         when(spellService.getById(id)).thenReturn(existingSpell);
@@ -52,8 +53,10 @@ public class SpellControllerTest {
         //Given
         String firstId = "id1";
         String secondId = "id2";
-        Spell firstSpell = new Spell(firstId, SpellLevel.CANTRIP, "Name1");
-        Spell secondSpell = new Spell(secondId, SpellLevel.LEVEL1, "Name2");
+        Spell firstSpell = new Spell(SpellLevel.CANTRIP, "Name1");
+        Spell secondSpell = new Spell(SpellLevel.LEVEL1, "Name2");
+        firstSpell.setId(firstId);
+        secondSpell.setId(secondId);
 
         List<Spell> existingSpells = new ArrayList<>(Arrays.asList(firstSpell, secondSpell));
 

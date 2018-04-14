@@ -23,7 +23,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-        String[] ennv = environment.getActiveProfiles();
         return new MongoClient(environment.getRequiredProperty("mongodb.host"), Integer.parseInt(environment.getRequiredProperty("mongodb.port")));
     }
 

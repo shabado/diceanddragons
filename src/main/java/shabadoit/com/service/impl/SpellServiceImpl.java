@@ -3,14 +3,20 @@ package shabadoit.com.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import shabadoit.com.exceptions.SpellManagementException;
+import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.spell.Spell;
+import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.repository.SpellRepository;
 import shabadoit.com.service.SpellService;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class SpellServiceImpl implements SpellService {
@@ -73,5 +79,23 @@ public class SpellServiceImpl implements SpellService {
             LOGGER.info("Id " + id + " not found, no item returned");
             return null;
         }
+    }
+
+    @Override
+    public List<Spell> listByClass(CharacterClass characterClass) {
+        //TODO Add error handling
+        return spellRepository.findBySpellClasses(characterClass);
+    }
+
+    @Override
+    public List<Spell> listBySpellLevel(SpellLevel spellLevel) {
+        //TODO Add error handling
+        return spellRepository.findBySpellLevel(spellLevel);
+    }
+
+    @Override
+    public List<Spell> listByClassAndLevel(CharacterClass characterClass, SpellLevel spellLevel) {
+        //TODO Add error handling
+        return spellRepository.findBySpellClassesAndSpellLevel(characterClass, spellLevel);
     }
 }

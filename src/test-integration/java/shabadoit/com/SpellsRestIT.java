@@ -1,5 +1,6 @@
 package shabadoit.com;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +48,11 @@ public class SpellsRestIT {
         List<Spell> insertedSpells = spellRepository.insert(spells);
         firstSpell = insertedSpells.get(0);
         secondSpell = insertedSpells.get(1);
+    }
+
+    @After
+    public void tearDown() {
+        spellRepository.deleteAll();
     }
 
     @Test

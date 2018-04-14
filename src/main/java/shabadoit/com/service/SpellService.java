@@ -1,6 +1,8 @@
 package shabadoit.com.service;
 
+import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.spell.Spell;
+import shabadoit.com.model.spell.SpellLevel;
 
 import java.util.List;
 
@@ -11,4 +13,7 @@ public interface SpellService {
     Spell updateById(String id, Spell spell);
     void deleteById(String id);
     Spell getById(String id);
+    List<Spell> listByClass(CharacterClass characterClass);
+    List<Spell> listBySpellLevel(SpellLevel spellLevel);
+    List<Spell> listByClassAndLevel(CharacterClass characterClass, SpellLevel spellLevel);
 }

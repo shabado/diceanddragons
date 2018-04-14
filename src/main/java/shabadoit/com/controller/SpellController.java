@@ -2,7 +2,9 @@ package shabadoit.com.controller;
 
 import org.springframework.http.HttpStatus;
 import shabadoit.com.exceptions.SpellManagementException;
+import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.spell.Spell;
+import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.service.SpellService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,21 @@ public class SpellController {
     @RequestMapping(value = "spells/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable String id) {
         spellService.deleteById(id);
+    }
+
+    @RequestMapping(value = "spell/?class={class}", method = RequestMethod.GET)
+    public List<Spell> listByClass(CharacterClass className) {
+        return spellService.listByClass(className);
+    }
+
+    @RequestMapping(value = "spell/?level={level}", method = RequestMethod.GET)
+    public List<Spell> listByLevel(SpellLevel spellLevel){
+        return spellService.listBySpellLevel(spellLevel);
+    }
+
+    @RequestMapping(value = "spell/?class={class}&level={level}", method = RequestMethod.GET)
+    public List<Spell> listByClassAndLevel(CharacterClass characterClass, SpellLevel spellLevel){
+        return spellService.listByClassAndLevel(characterClass, spellLevel);
     }
 
     @ExceptionHandler(SpellManagementException.class)

@@ -1,5 +1,6 @@
 package shabadoit.com.controller;
 
+import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.service.SpellService;
 import org.junit.Before;
@@ -34,23 +35,19 @@ public class SpellControllerTest {
 
     @Test
     public void should_get_spell_by_id() {
-        //Given
         String id = "Id";
         Spell existingSpell = new Spell(SpellLevel.LEVEL1, "Name");
         existingSpell.setId(id);
 
-        //When
         when(spellService.getById(id)).thenReturn(existingSpell);
         Spell spell = spellController.getById(id);
 
-        //Then
         verify(spellService).getById(id);
         assertThat(spell.getId(), is(id));
     }
 
     @Test
     public void should_list_all_spells() {
-        //Given
         String firstId = "id1";
         String secondId = "id2";
         Spell firstSpell = new Spell(SpellLevel.CANTRIP, "Name1");
@@ -60,27 +57,96 @@ public class SpellControllerTest {
 
         List<Spell> existingSpells = new ArrayList<>(Arrays.asList(firstSpell, secondSpell));
 
-        //When
         when(spellService.getAllSpells()).thenReturn(existingSpells);
         List<Spell> spells = spellController.list();
 
-        //Then
         verify(spellService).getAllSpells();
         assertEquals(spells, existingSpells);
     }
 
     @Test
-    public void should_create_new_spell() {}
+    public void should_call_add_new_spell() {
+        Spell spellToAdd = new Spell(SpellLevel.CANTRIP, "Name1");
+
+        when(spellService.addSpell(spellToAdd)).thenReturn(spellToAdd);
+        Spell created = spellController.create(spellToAdd);
+
+        verify(spellService).addSpell(spellToAdd);
+        assertEquals(created, spellToAdd);
+    }
 
     @Test
-    public void should_get_by_name() {}
+    public void should_get_by_name() {
+        String name = "name";
+        Spell spell = new Spell(SpellLevel.CANTRIP, name);
+
+        when(spellService.getByName(name)).thenReturn(spell);
+        Spell returnedSpell = spellController.getByName(name);
+
+        verify(spellService).getByName(name);
+        assertEquals(spell, returnedSpell);
+    }
 
     @Test
-    public void should_update() {}
+    public void should_call_update() {
+        String id = "id";
+        Spell spellToUpdate = new Spell(SpellLevel.CANTRIP, "Name1");
+
+        when(spellService.updateById(id, spellToUpdate)).thenReturn(spellToUpdate);
+        Spell updated = spellController.update(id, spellToUpdate);
+
+        verify(spellService).updateById(id, spellToUpdate);
+        assertEquals(updated, spellToUpdate);
+    }
 
     @Test
-    public void should_not_update_when_ids_differ() {}
+    public void should_delete_call_delete() {
+        String id = "id";
+
+        spellController.delete(id);
+
+        verify(spellService).deleteById(id);
+    }
 
     @Test
-    public void should_delete() {}
+    public void should_get_by_class() {
+        CharacterClass charClass = CharacterClass.WIZARD;
+        Spell spell = new Spell(SpellLevel.CANTRIP, "name");
+        spell.setSpellClasses(Arrays.asList(charClass));
+        List<Spell> toAdd = Arrays.asList(spell);
+
+        when(spellService.listByClass(charClass)).thenReturn(toAdd);
+        List<Spell> returnedSpells = spellController.listByClass(charClass);
+
+        verify(spellService).listByClass(charClass);
+        assertEquals(toAdd, returnedSpells);
+    }
+
+    @Test
+    public void should_get_by_level() {
+        SpellLevel spellLevel = SpellLevel.LEVEL1;
+        Spell spell = new Spell(spellLevel, "name");
+        List<Spell> toAdd = Arrays.asList(spell);
+
+        when(spellService.listBySpellLevel(spellLevel)).thenReturn(toAdd);
+        List<Spell> returnedSpells = spellController.listByLevel(spellLevel);
+
+        verify(spellService).listBySpellLevel(spellLevel);
+        assertEquals(toAdd, returnedSpells);
+    }
+
+    @Test
+    public void should_get_by_class_and_level() {
+        CharacterClass charClass = CharacterClass.WIZARD;
+        SpellLevel spellLevel = SpellLevel.LEVEL1;
+        Spell spell = new Spell(spellLevel, "name");
+        spell.setSpellClasses(Arrays.asList(charClass));
+        List<Spell> toAdd = Arrays.asList(spell);
+
+        when(spellService.listByClassAndLevel(charClass, spellLevel)).thenReturn(toAdd);
+        List<Spell> returnedSpells = spellController.listByClassAndLevel(charClass, spellLevel);
+
+        verify(spellService).listByClassAndLevel(charClass, spellLevel);
+        assertEquals(toAdd, returnedSpells);
+    }
 }

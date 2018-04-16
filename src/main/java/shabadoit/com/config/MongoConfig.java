@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+//TODO revert this to !test when ready to deploy somewhere
 @Profile("dev")
 @Configuration
 public class MongoConfig extends AbstractMongoConfiguration {
@@ -23,7 +24,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-        String[] ennv = environment.getActiveProfiles();
         return new MongoClient(environment.getRequiredProperty("mongodb.host"), Integer.parseInt(environment.getRequiredProperty("mongodb.port")));
     }
 

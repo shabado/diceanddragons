@@ -17,8 +17,12 @@ public class CharacterServiceImpl implements CharacterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CharacterServiceImpl.class);
 
-    @Autowired
     private CharacterRepository characterRepository;
+
+    @Autowired
+    public CharacterServiceImpl(final CharacterRepository characterRepository) {
+        this.characterRepository = characterRepository;
+    }
 
     @Override
     public CharacterSheet addCharacter(CharacterSheet characterSheet) {

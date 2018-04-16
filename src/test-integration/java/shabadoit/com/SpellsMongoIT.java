@@ -15,9 +15,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import shabadoit.com.controller.SpellController;
 import shabadoit.com.exceptions.SpellManagementException;
 import shabadoit.com.model.character.CharacterClass;
+import shabadoit.com.model.filter.SpellFilter;
 import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.repository.SpellRepository;
+import shabadoit.com.service.impl.SpellFilterService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +81,9 @@ public class SpellsMongoIT {
                 new Spell(SpellLevel.LEVEL6, "Level6Spell2")));
         spellRepository.insert(level6Spells);
 
-        List<Spell> foundSpells = spellController.listByLevel(SpellLevel.LEVEL6);
+        SpellFilter filter = SpellFilter.builder().spellLevel(SpellLevel.LEVEL6).build();
+
+        List<Spell> foundSpells = spellController.filterSpells(filter);
 
         assertTrue(foundSpells.stream().allMatch(x -> x.getSpellLevel() == SpellLevel.LEVEL6));
         assertEquals(foundSpells, level6Spells);
@@ -99,8 +103,11 @@ public class SpellsMongoIT {
             List<Spell> spells = Arrays.asList(filteredOutSpell, returnedSingleclass, returnedMultiClass);
             spellRepository.insert(spells);
 
-            List<Spell> foundSpells = spellController.listByClass(classToSearch);
+            SpellFilter filter = SpellFilter.builder().characterClass(classToSearch).build();
 
+            List<Spell> foundSpells = spellController.filterSpells(filter);
+
+            assertEquals(2, foundSpells.size());
             assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));
         }
     }
@@ -121,8 +128,11 @@ public class SpellsMongoIT {
         List<Spell> spells = Arrays.asList(filteredOutByClass, filteredOutByLevel, returnedSingleclass, returnedMultiClass);
         spellRepository.insert(spells);
 
-        List<Spell> foundSpells = spellController.listByClassAndLevel(classToSearch, levelToSearch);
+        SpellFilter filter = SpellFilter.builder().characterClass(classToSearch).spellLevel(levelToSearch).build();
 
+        List<Spell> foundSpells = spellController.filterSpells(filter);
+
+        assertEquals(2, foundSpells.size());
         assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));
         assertTrue(foundSpells.stream().allMatch(x -> x.getSpellLevel().equals(levelToSearch)));
     }
@@ -130,9 +140,77 @@ public class SpellsMongoIT {
 
     @Test
     public void should_return_spell_by_name() {
-        Spell spell = spellController.getByName(firstName);
+        SpellFilter filter = SpellFilter.builder().name(firstName).build();
 
-        assertEquals(firstSpell, spell);
+        List<Spell> filteredSpells = spellController.filterSpells(filter);
+
+        assertEquals(1, filteredSpells.size());
+        assertEquals(firstName, filteredSpells.get(0).getName());
+    }
+
+    @Test
+    public void should_return_case_insensitive_by_name() {
+        SpellFilter lowerCaseFilter = SpellFilter.builder().name(firstName.toLowerCase()).build();
+        SpellFilter upperCaseFilter = SpellFilter.builder().name(firstName.toUpperCase()).build();
+
+        List<Spell> filteredLowerCase = spellController.filterSpells(lowerCaseFilter);
+        List<Spell> filteredUpperCase = spellController.filterSpells(upperCaseFilter);
+
+        assertEquals(1, filteredLowerCase.size());
+        assertEquals(firstName, filteredLowerCase.get(0).getName());
+
+        assertEquals(1, filteredUpperCase.size());
+        assertEquals(firstName, filteredUpperCase.get(0).getName());
+
+        assertEquals(filteredLowerCase, filteredUpperCase);
+    }
+
+    @Test
+    public void should_return_partial_match_by_name() {
+        String partialName = "Partial";
+        String fullName = partialName + "extraChars";
+        Spell spell = new Spell(SpellLevel.LEVEL1, fullName);
+        spellRepository.insert(spell);
+
+        SpellFilter filter = SpellFilter.builder().name(partialName).build();
+
+        List<Spell> filteredSpells = spellController.filterSpells(filter);
+
+        assertEquals(1, filteredSpells.size());
+        assertEquals(fullName, filteredSpells.get(0).getName());
+    }
+
+    @Test
+    public void should_return_by_name_class_and_level() {
+        String filterName = "filtered";
+        CharacterClass classToSearch = CharacterClass.WIZARD;
+        SpellLevel levelToSearch = SpellLevel.CANTRIP;
+        Spell returnedSpell = new Spell(levelToSearch, filterName);
+        returnedSpell.setSpellClasses(Arrays.asList(classToSearch));
+        Spell returnedMultiClass = new Spell(levelToSearch, filterName + "1");
+        returnedMultiClass.setSpellClasses(Arrays.asList(classToSearch, CharacterClass.BARD));
+        Spell filteredOutByLevel = new Spell(SpellLevel.LEVEL1, filterName + "2");
+        Spell filteredOutByName = new Spell(levelToSearch, "wrongname");
+        Spell filteredOutByClass = new Spell(levelToSearch, filterName + "3");
+        filteredOutByClass.setSpellClasses(Arrays.asList(CharacterClass.BARD));
+
+        List<Spell> spells = Arrays.asList(returnedSpell, returnedMultiClass,
+                filteredOutByClass, filteredOutByLevel, filteredOutByName);
+        spellRepository.insert(spells);
+
+        SpellFilter filter = SpellFilter.builder()
+                .characterClass(classToSearch).spellLevel(levelToSearch).name(filterName).build();
+
+        List<Spell> foundSpells = spellController.filterSpells(filter);
+
+        assertEquals(foundSpells.size(), 2);
+        assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));
+        assertTrue(foundSpells.stream().allMatch(x -> x.getSpellLevel().equals(levelToSearch)));
+        assertTrue(foundSpells.stream().allMatch(x -> x.getName().contains(filterName)));
+    }
+
+    @Test
+    public void should_not_return_non_matching_by_name() {
     }
 
     @Test

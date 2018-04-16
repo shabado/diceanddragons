@@ -20,7 +20,6 @@ public class CharacterSheet {
     @Id
     private String id;
     private String name;
-    @JsonProperty("class")
     private CharacterClass className;
     private int currentHP;
     private int maxHP;

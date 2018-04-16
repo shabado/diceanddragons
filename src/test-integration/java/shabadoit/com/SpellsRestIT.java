@@ -15,9 +15,7 @@ import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.repository.SpellRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -70,16 +68,37 @@ public class SpellsRestIT {
     }
 
     @Test
-    public void returns_all_spells() {
+    public void should_return_all_spells() {
         ResponseEntity<Spell[]> response = testRestTemplate.getForEntity("/api/v1/spells", Spell[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertThat(spells, containsInAnyOrder(response.getBody()));
     }
 
-    //Duplicate Id throws 400
-    //Get by Id
-    //Get by name
+    @Test
+    public void duplicate_insert_id_returns_400() {
+        Spell duplicateId = new Spell(SpellLevel.LEVEL1, "DuplicateId");
+        duplicateId.setId(firstSpell.getId());
+
+        ResponseEntity response = testRestTemplate.postForEntity("/api/v1/spells", duplicateId, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void should_get_by_id() {
+
+        ResponseEntity<Spell> response =
+                testRestTemplate.getForEntity("/api/v1/spells/" + firstSpell.getId(), Spell.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(firstSpell, response.getBody());
+    }
+
+
+    //All filters
     //Update
     //Delete
     //Failed update if params dont match
+    //Spells by class
+    //Spells by level
+    //Spells by class & level
 }

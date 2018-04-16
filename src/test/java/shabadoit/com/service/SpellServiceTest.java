@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class SpellServiceTest {
+
     @InjectMocks
     private SpellServiceImpl spellService;
 
@@ -63,7 +64,7 @@ public class SpellServiceTest {
         List<Spell> existingSpells = new ArrayList<>(Arrays.asList(firstSpell, secondSpell));
 
         when(spellRepository.findAll()).thenReturn(existingSpells);
-        List<Spell> returnedSpells = spellService.getAllSpells();
+        List<Spell> returnedSpells = spellService.listAllSpells();
 
         verify(spellRepository).findAll();
         assertEquals(existingSpells, returnedSpells);
@@ -71,14 +72,40 @@ public class SpellServiceTest {
 
     @Test
     public void should_get_by_name() {
-        Spell dbSpell = new Spell(SpellLevel.LEVEL1, "Name2");
-        dbSpell.setId("id");
+        Spell spell = new Spell(SpellLevel.LEVEL1, "Name");
+        spell.setId("id");
 
-        when(spellRepository.insert(dbSpell)).thenReturn(dbSpell);
-        Spell returnedSpell = spellService.addSpell(dbSpell);
+        when(spellRepository.getByName(spell.getName())).thenReturn(spell);
+        Spell returnedSpell = spellService.getByName(spell.getName());
 
-        verify(spellRepository).insert(dbSpell);
-        assertEquals(dbSpell, returnedSpell);
+        verify(spellRepository).getByName(spell.getName());
+        assertEquals(spell, returnedSpell);
+    }
+
+    @Test
+    public void should_query_by_name() {
+        Spell spell = new Spell(SpellLevel.LEVEL1, "Name");
+        List<Spell> spells = Arrays.asList(spell);
+
+        when(spellRepository.findByNameQuery(spell.getName())).thenReturn(spells);
+        List<Spell> returnedSpells = spellService.searchByName(spell.getName());
+
+        verify(spellRepository).findByNameQuery(spell.getName());
+        assertEquals(spells, returnedSpells);
+    }
+
+    @Test
+    public void should_return_all_partial_matching_by_name() {
+        String searchName = "Name";
+        Spell firstSpell = new Spell(SpellLevel.LEVEL1, "Name1");
+        Spell secondMatch = new Spell(SpellLevel.LEVEL1, "Name1");
+        List<Spell> spells = Arrays.asList(firstSpell, secondMatch);
+
+        when(spellRepository.findByNameQuery(searchName)).thenReturn(spells);
+        List<Spell> returnedSpells = spellService.searchByName(searchName);
+
+        verify(spellRepository).findByNameQuery(searchName);
+        assertEquals(spells, returnedSpells);
     }
 
     @Test
@@ -138,7 +165,7 @@ public class SpellServiceTest {
     }
 
     @Test
-    public void should_list_by_level() {
+    public void should_filter_by_level() {
         SpellLevel spellLevel = SpellLevel.CANTRIP;
         String id = "id";
         Spell dbSpell = new Spell(spellLevel, "Name2");
@@ -153,7 +180,7 @@ public class SpellServiceTest {
     }
 
     @Test
-    public void should_list_by_class_and_level() {
+    public void should_filter_by_class_and_level() {
         SpellLevel spellLevel = SpellLevel.CANTRIP;
         CharacterClass spellClass = CharacterClass.WIZARD;
         String id = "id";
@@ -166,6 +193,21 @@ public class SpellServiceTest {
         List<Spell> returnedSpells = spellService.listByClassAndLevel(spellClass, spellLevel);
 
         verify(spellRepository).findBySpellClassesAndSpellLevel(spellClass, spellLevel);
+        assertEquals(dbSpells, returnedSpells);
+    }
+
+    @Test
+    public void should_filter_by_name() {
+        String filterName = "name";
+        String id = "id";
+        Spell dbSpell = new Spell(SpellLevel.LEVEL1, filterName);
+        dbSpell.setId(id);
+        List<Spell> dbSpells = Arrays.asList(dbSpell);
+
+        when(spellRepository.findByNameQuery(filterName)).thenReturn(dbSpells);
+        List<Spell> returnedSpells = spellService.searchByName(filterName);
+
+        verify(spellRepository).findByNameQuery(filterName);
         assertEquals(dbSpells, returnedSpells);
     }
 
@@ -201,7 +243,7 @@ public class SpellServiceTest {
         Spell dbSpell = new Spell(SpellLevel.LEVEL1, name);
         dbSpell.setId(id);
 
-        when(spellRepository.findByName(name)).thenReturn(dbSpell);
+        when(spellRepository.getByName(name)).thenReturn(dbSpell);
 
         exception.expect(SpellManagementException.class);
         exception.expectMessage("Spell with name " + name + " already exists");

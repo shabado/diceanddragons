@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface SpellService {
     Spell addSpell(final Spell spellDetails);
-    List<Spell> getAllSpells();
+    List<Spell> listAllSpells();
+    List<Spell> searchByName(String name);
     Spell getByName(String name);
     Spell updateById(String id, Spell spell);
     void deleteById(String id);

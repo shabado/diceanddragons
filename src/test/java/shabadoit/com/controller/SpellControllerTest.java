@@ -1,14 +1,17 @@
 package shabadoit.com.controller;
 
-import shabadoit.com.model.character.CharacterClass;
-import shabadoit.com.model.spell.SpellLevel;
-import shabadoit.com.service.SpellService;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.junit4.SpringRunner;
+import shabadoit.com.model.character.CharacterClass;
+import shabadoit.com.model.filter.SpellFilter;
 import shabadoit.com.model.spell.Spell;
+import shabadoit.com.model.spell.SpellLevel;
+import shabadoit.com.service.SpellService;
+import shabadoit.com.service.impl.SpellFilterService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,17 +23,20 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringRunner.class)
 public class SpellControllerTest {
-
-    @InjectMocks
     private SpellController spellController;
 
     @Mock
     private SpellService spellService;
 
+    @Mock
+    private SpellFilterService spellFilterService;
+
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
+        spellController = new SpellController(spellService, spellFilterService);
     }
 
     @Test
@@ -57,10 +63,10 @@ public class SpellControllerTest {
 
         List<Spell> existingSpells = new ArrayList<>(Arrays.asList(firstSpell, secondSpell));
 
-        when(spellService.getAllSpells()).thenReturn(existingSpells);
+        when(spellService.listAllSpells()).thenReturn(existingSpells);
         List<Spell> spells = spellController.list();
 
-        verify(spellService).getAllSpells();
+        verify(spellService).listAllSpells();
         assertEquals(spells, existingSpells);
     }
 
@@ -73,18 +79,6 @@ public class SpellControllerTest {
 
         verify(spellService).addSpell(spellToAdd);
         assertEquals(created, spellToAdd);
-    }
-
-    @Test
-    public void should_get_by_name() {
-        String name = "name";
-        Spell spell = new Spell(SpellLevel.CANTRIP, name);
-
-        when(spellService.getByName(name)).thenReturn(spell);
-        Spell returnedSpell = spellController.getByName(name);
-
-        verify(spellService).getByName(name);
-        assertEquals(spell, returnedSpell);
     }
 
     @Test
@@ -109,44 +103,18 @@ public class SpellControllerTest {
     }
 
     @Test
-    public void should_get_by_class() {
-        CharacterClass charClass = CharacterClass.WIZARD;
-        Spell spell = new Spell(SpellLevel.CANTRIP, "name");
-        spell.setSpellClasses(Arrays.asList(charClass));
-        List<Spell> toAdd = Arrays.asList(spell);
+    public void should_call_filter() {
+        SpellFilter filter = SpellFilter.builder().build();
 
-        when(spellService.listByClass(charClass)).thenReturn(toAdd);
-        List<Spell> returnedSpells = spellController.listByClass(charClass);
-
-        verify(spellService).listByClass(charClass);
-        assertEquals(toAdd, returnedSpells);
-    }
-
-    @Test
-    public void should_get_by_level() {
         SpellLevel spellLevel = SpellLevel.LEVEL1;
         Spell spell = new Spell(spellLevel, "name");
         List<Spell> toAdd = Arrays.asList(spell);
 
-        when(spellService.listBySpellLevel(spellLevel)).thenReturn(toAdd);
-        List<Spell> returnedSpells = spellController.listByLevel(spellLevel);
 
-        verify(spellService).listBySpellLevel(spellLevel);
-        assertEquals(toAdd, returnedSpells);
-    }
+        when(spellFilterService.filterSpells(filter)).thenReturn(toAdd);
+        List<Spell> returnedSpells = spellController.filterSpells(filter);
 
-    @Test
-    public void should_get_by_class_and_level() {
-        CharacterClass charClass = CharacterClass.WIZARD;
-        SpellLevel spellLevel = SpellLevel.LEVEL1;
-        Spell spell = new Spell(spellLevel, "name");
-        spell.setSpellClasses(Arrays.asList(charClass));
-        List<Spell> toAdd = Arrays.asList(spell);
-
-        when(spellService.listByClassAndLevel(charClass, spellLevel)).thenReturn(toAdd);
-        List<Spell> returnedSpells = spellController.listByClassAndLevel(charClass, spellLevel);
-
-        verify(spellService).listByClassAndLevel(charClass, spellLevel);
+        verify(spellFilterService).filterSpells(filter);
         assertEquals(toAdd, returnedSpells);
     }
 }

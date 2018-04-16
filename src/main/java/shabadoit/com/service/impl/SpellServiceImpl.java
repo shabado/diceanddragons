@@ -3,8 +3,6 @@ package shabadoit.com.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import shabadoit.com.exceptions.SpellManagementException;
 import shabadoit.com.model.character.CharacterClass;
@@ -16,15 +14,17 @@ import shabadoit.com.service.SpellService;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.data.mongodb.core.query.Query.query;
-
 @Service
 public class SpellServiceImpl implements SpellService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellServiceImpl.class);
 
-    @Autowired
     private SpellRepository spellRepository;
+
+    @Autowired
+    public SpellServiceImpl(final SpellRepository spellRepository){
+        this.spellRepository = spellRepository;
+    }
 
     public Spell addSpell(Spell spell) {
         if (getByName(spell.getName()) != null) {
@@ -37,13 +37,18 @@ public class SpellServiceImpl implements SpellService {
     }
 
     @Override
-    public List<Spell> getAllSpells() {
+    public List<Spell> listAllSpells() {
         return spellRepository.findAll();
     }
 
     @Override
+    public List<Spell> searchByName(String name) {
+        return spellRepository.findByNameQuery(name);
+    }
+
+    @Override
     public Spell getByName(String name) {
-        return spellRepository.findByName(name);
+        return spellRepository.getByName(name);
         //Could wrap this and log failures
     }
 

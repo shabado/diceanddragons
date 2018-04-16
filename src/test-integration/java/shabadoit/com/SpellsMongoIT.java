@@ -88,32 +88,44 @@ public class SpellsMongoIT {
     @Test
     public void should_return_spells_by_class() {
         {
-            //TODO tidy up
-            Spell spell1 = new Spell(SpellLevel.LEVEL1, "bardspell");
-            spell1.setSpellClasses(Arrays.asList(CharacterClass.BARD));
-            Spell spell2 = new Spell(SpellLevel.LEVEL1, "wizardspell");
-            spell2.setSpellClasses(Arrays.asList(CharacterClass.WIZARD));
-            Spell spell3 = new Spell(SpellLevel.LEVEL1, "wizardspell2");
-            spell3.setSpellClasses(Arrays.asList(CharacterClass.WIZARD, CharacterClass.BARD, CharacterClass.WARLOCK));
+            CharacterClass classToSearch = CharacterClass.WIZARD;
+            Spell filteredOutSpell = new Spell(SpellLevel.LEVEL1, "filtered");
+            filteredOutSpell.setSpellClasses(Arrays.asList(CharacterClass.BARD));
+            Spell returnedSingleclass = new Spell(SpellLevel.LEVEL1, "returned1");
+            returnedSingleclass.setSpellClasses(Arrays.asList(classToSearch));
+            Spell returnedMultiClass = new Spell(SpellLevel.LEVEL1, "returned2");
+            returnedMultiClass.setSpellClasses(Arrays.asList(classToSearch, CharacterClass.BARD, CharacterClass.WARLOCK));
 
-            spellRepository.insert(spell1);
-            spellRepository.insert(spell2);
-            spellRepository.insert(spell3);
+            List<Spell> spells = Arrays.asList(filteredOutSpell, returnedSingleclass, returnedMultiClass);
+            spellRepository.insert(spells);
 
-            List<Spell> foundSpells = spellController.listByClass(CharacterClass.WIZARD);
-            List<Spell> foundSpells2 = spellController.listByClassAndLevel(CharacterClass.WIZARD, SpellLevel.LEVEL1);
+            List<Spell> foundSpells = spellController.listByClass(classToSearch);
 
-            assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(CharacterClass.WIZARD)));
-
+            assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));
         }
     }
 
     @Test
     public void should_return_spells_by_class_and_level() {
-        //TODO todo
-        assertTrue(false);
-    }
+        CharacterClass classToSearch = CharacterClass.WIZARD;
+        SpellLevel levelToSearch = SpellLevel.CANTRIP;
+        Spell filteredOutByClass = new Spell(levelToSearch, "filtered1");
+        filteredOutByClass.setSpellClasses(Arrays.asList(CharacterClass.BARD));
+        Spell filteredOutByLevel = new Spell(SpellLevel.LEVEL1, "filtered2");
+        filteredOutByLevel.setSpellClasses(Arrays.asList(classToSearch));
+        Spell returnedSingleclass = new Spell(levelToSearch, "returned1");
+        returnedSingleclass.setSpellClasses(Arrays.asList(classToSearch));
+        Spell returnedMultiClass = new Spell(levelToSearch, "returned2");
+        returnedMultiClass.setSpellClasses(Arrays.asList(classToSearch, CharacterClass.BARD, CharacterClass.WARLOCK));
 
+        List<Spell> spells = Arrays.asList(filteredOutByClass, filteredOutByLevel, returnedSingleclass, returnedMultiClass);
+        spellRepository.insert(spells);
+
+        List<Spell> foundSpells = spellController.listByClassAndLevel(classToSearch, levelToSearch);
+
+        assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));
+        assertTrue(foundSpells.stream().allMatch(x -> x.getSpellLevel().equals(levelToSearch)));
+    }
 
 
     @Test

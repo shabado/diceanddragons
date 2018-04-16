@@ -23,7 +23,6 @@ public class SpellServiceImpl implements SpellService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpellServiceImpl.class);
 
-
     @Autowired
     private SpellRepository spellRepository;
 

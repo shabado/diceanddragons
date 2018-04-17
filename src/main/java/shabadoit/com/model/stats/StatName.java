@@ -3,12 +3,12 @@ package shabadoit.com.model.stats;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum StatName {
-    STRENGTH("d4"),
-    CONSTITUTION("d6"),
-    DEXTERITY("d8"),
-    INTELLIGENCE("d10"),
-    WISDOM("d12"),
-    CHARISMA("d20");
+    STRENGTH("Strength"),
+    CONSTITUTION("Constitution"),
+    DEXTERITY("Dexterity"),
+    INTELLIGENCE("Intelligence"),
+    WISDOM("Wisdom"),
+    CHARISMA("Charisma");
 
     private String value;
 

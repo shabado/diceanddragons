@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class SpellDamage {
     private int diceNumber;
-    private DamageDice damageDice;
+    private DamageDie damageDie;
 }

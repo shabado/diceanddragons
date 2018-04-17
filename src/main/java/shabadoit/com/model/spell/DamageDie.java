@@ -2,7 +2,7 @@ package shabadoit.com.model.spell;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum DamageDice {
+public enum DamageDie {
     DFOUR("d4"),
     DSIX("d6"),
     DEIGHT("d8"),
@@ -14,7 +14,7 @@ public enum DamageDice {
 
     private String value;
 
-    DamageDice(String value) {
+    DamageDie(String value) {
         this.value = value;
     }
 

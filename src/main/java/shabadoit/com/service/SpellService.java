@@ -5,6 +5,7 @@ import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SpellService {
     Spell addSpell(final Spell spellDetails);
@@ -13,7 +14,7 @@ public interface SpellService {
     Spell getByName(String name);
     Spell updateById(String id, Spell spell);
     void deleteById(String id);
-    Spell getById(String id);
+    Optional<Spell> getById(String id);
     List<Spell> listByClass(CharacterClass characterClass);
     List<Spell> listBySpellLevel(SpellLevel spellLevel);
     List<Spell> listByClassAndLevel(CharacterClass characterClass, SpellLevel spellLevel);

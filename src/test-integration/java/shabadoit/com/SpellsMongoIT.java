@@ -62,14 +62,14 @@ public class SpellsMongoIT {
 
     @Test
     public void should_return_all_spells_in_db() {
-        List<Spell> foundSpells = spellController.list();
+        List<Spell> foundSpells = spellController.list().getBody();
 
         assertEquals(foundSpells, spells);
     }
 
     @Test
     public void should_return_spell_by_Id() {
-        Spell spell = spellController.getById(firstSpell.getId());
+        Spell spell = (Spell) spellController.getById(firstSpell.getId()).getBody();
 
         assertEquals(firstSpell, spell);
     }
@@ -83,7 +83,7 @@ public class SpellsMongoIT {
 
         SpellFilter filter = SpellFilter.builder().spellLevel(SpellLevel.LEVEL6).build();
 
-        List<Spell> foundSpells = spellController.filterSpells(filter);
+        List<Spell> foundSpells = spellController.filterSpells(filter).getBody();
 
         assertTrue(foundSpells.stream().allMatch(x -> x.getSpellLevel() == SpellLevel.LEVEL6));
         assertEquals(foundSpells, level6Spells);
@@ -105,7 +105,7 @@ public class SpellsMongoIT {
 
             SpellFilter filter = SpellFilter.builder().characterClass(classToSearch).build();
 
-            List<Spell> foundSpells = spellController.filterSpells(filter);
+            List<Spell> foundSpells = spellController.filterSpells(filter).getBody();
 
             assertEquals(2, foundSpells.size());
             assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));
@@ -130,7 +130,7 @@ public class SpellsMongoIT {
 
         SpellFilter filter = SpellFilter.builder().characterClass(classToSearch).spellLevel(levelToSearch).build();
 
-        List<Spell> foundSpells = spellController.filterSpells(filter);
+        List<Spell> foundSpells = spellController.filterSpells(filter).getBody();
 
         assertEquals(2, foundSpells.size());
         assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));
@@ -142,7 +142,7 @@ public class SpellsMongoIT {
     public void should_return_spell_by_name() {
         SpellFilter filter = SpellFilter.builder().name(firstName).build();
 
-        List<Spell> filteredSpells = spellController.filterSpells(filter);
+        List<Spell> filteredSpells = spellController.filterSpells(filter).getBody();
 
         assertEquals(1, filteredSpells.size());
         assertEquals(firstName, filteredSpells.get(0).getName());
@@ -153,8 +153,8 @@ public class SpellsMongoIT {
         SpellFilter lowerCaseFilter = SpellFilter.builder().name(firstName.toLowerCase()).build();
         SpellFilter upperCaseFilter = SpellFilter.builder().name(firstName.toUpperCase()).build();
 
-        List<Spell> filteredLowerCase = spellController.filterSpells(lowerCaseFilter);
-        List<Spell> filteredUpperCase = spellController.filterSpells(upperCaseFilter);
+        List<Spell> filteredLowerCase = spellController.filterSpells(lowerCaseFilter).getBody();
+        List<Spell> filteredUpperCase = spellController.filterSpells(upperCaseFilter).getBody();
 
         assertEquals(1, filteredLowerCase.size());
         assertEquals(firstName, filteredLowerCase.get(0).getName());
@@ -174,7 +174,7 @@ public class SpellsMongoIT {
 
         SpellFilter filter = SpellFilter.builder().name(partialName).build();
 
-        List<Spell> filteredSpells = spellController.filterSpells(filter);
+        List<Spell> filteredSpells = spellController.filterSpells(filter).getBody();
 
         assertEquals(1, filteredSpells.size());
         assertEquals(fullName, filteredSpells.get(0).getName());
@@ -201,7 +201,7 @@ public class SpellsMongoIT {
         SpellFilter filter = SpellFilter.builder()
                 .characterClass(classToSearch).spellLevel(levelToSearch).name(filterName).build();
 
-        List<Spell> foundSpells = spellController.filterSpells(filter);
+        List<Spell> foundSpells = spellController.filterSpells(filter).getBody();
 
         assertEquals(foundSpells.size(), 2);
         assertTrue(foundSpells.stream().allMatch(x -> x.getSpellClasses().contains(classToSearch)));

@@ -16,6 +16,7 @@ import shabadoit.com.service.impl.SpellFilterService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -45,8 +46,8 @@ public class SpellControllerTest {
         Spell existingSpell = new Spell(SpellLevel.LEVEL1, "Name");
         existingSpell.setId(id);
 
-        when(spellService.getById(id)).thenReturn(existingSpell);
-        Spell spell = spellController.getById(id);
+        when(spellService.getById(id)).thenReturn(Optional.of(existingSpell));
+        Spell spell = spellController.getById(id).getBody();
 
         verify(spellService).getById(id);
         assertThat(spell.getId(), is(id));
@@ -64,7 +65,7 @@ public class SpellControllerTest {
         List<Spell> existingSpells = new ArrayList<>(Arrays.asList(firstSpell, secondSpell));
 
         when(spellService.listAllSpells()).thenReturn(existingSpells);
-        List<Spell> spells = spellController.list();
+        List<Spell> spells = spellController.list().getBody();
 
         verify(spellService).listAllSpells();
         assertEquals(spells, existingSpells);
@@ -75,7 +76,7 @@ public class SpellControllerTest {
         Spell spellToAdd = new Spell(SpellLevel.CANTRIP, "Name1");
 
         when(spellService.addSpell(spellToAdd)).thenReturn(spellToAdd);
-        Spell created = spellController.create(spellToAdd);
+        Spell created = spellController.create(spellToAdd).getBody();
 
         verify(spellService).addSpell(spellToAdd);
         assertEquals(created, spellToAdd);
@@ -87,7 +88,7 @@ public class SpellControllerTest {
         Spell spellToUpdate = new Spell(SpellLevel.CANTRIP, "Name1");
 
         when(spellService.updateById(id, spellToUpdate)).thenReturn(spellToUpdate);
-        Spell updated = spellController.update(id, spellToUpdate);
+        Spell updated = spellController.update(id, spellToUpdate).getBody();
 
         verify(spellService).updateById(id, spellToUpdate);
         assertEquals(updated, spellToUpdate);
@@ -112,7 +113,7 @@ public class SpellControllerTest {
 
 
         when(spellFilterService.filterSpells(filter)).thenReturn(toAdd);
-        List<Spell> returnedSpells = spellController.filterSpells(filter);
+        List<Spell> returnedSpells = spellController.filterSpells(filter).getBody();
 
         verify(spellFilterService).filterSpells(filter);
         assertEquals(toAdd, returnedSpells);

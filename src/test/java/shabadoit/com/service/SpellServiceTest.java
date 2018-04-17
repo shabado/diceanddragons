@@ -144,7 +144,7 @@ public class SpellServiceTest {
 
         when(spellRepository.findById(id)).thenReturn(Optional.of(dbSpell));
 
-        Spell returnedSpell = spellService.getById(id);
+        Spell returnedSpell = spellService.getById(id).get();
         assertEquals(dbSpell, returnedSpell);
     }
 

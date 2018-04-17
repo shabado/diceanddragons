@@ -8,14 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.util.UriComponentsBuilder;
 import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.repository.SpellRepository;
 
-import java.util.*;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -54,7 +60,7 @@ public class SpellsRestIT {
     }
 
     @Test
-    public void can_add_new_spell() {
+    public void should_add_new_spell() {
         Spell newSpell = new Spell(SpellLevel.LEVEL1, "New spell");
         ResponseEntity<Spell> response = testRestTemplate.postForEntity("/api/v1/spells", newSpell, Spell.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -85,7 +91,6 @@ public class SpellsRestIT {
 
     @Test
     public void should_get_by_id() {
-
         ResponseEntity<Spell> response =
                 testRestTemplate.getForEntity("/api/v1/spells/" + firstSpell.getId(), Spell.class);
 
@@ -93,12 +98,76 @@ public class SpellsRestIT {
         assertEquals(firstSpell, response.getBody());
     }
 
+    @Test
+    public void should_update_spell() {
+        Spell updatedSpell = new Spell(SpellLevel.LEVEL6, "New Name");
+        updatedSpell.setId(firstSpell.getId());
 
-    //All filters
-    //Update
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/")
+                .pathSegment(firstSpell.getId()).build().toUri();
+
+        RequestEntity<Spell> requestEntity = new RequestEntity<>(updatedSpell, HttpMethod.PUT, uri);
+
+        ResponseEntity<Spell> response =
+                testRestTemplate.exchange(requestEntity, Spell.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedSpell, response.getBody());
+
+        //Check spell has updated
+        ResponseEntity<Spell> getResponse =
+                testRestTemplate.getForEntity("/api/v1/spells/" + firstSpell.getId(), Spell.class);
+
+        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
+        assertEquals(updatedSpell, getResponse.getBody());
+    }
+
+    @Test
+    public void should_bad_request_if_update_Id_mismatch() {
+        Spell updatedSpell = new Spell(SpellLevel.LEVEL6, "New Name");
+        updatedSpell.setId("MismatchId");
+
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/")
+                .pathSegment(firstSpell.getId()).build().toUri();
+
+        RequestEntity<Spell> requestEntity = new RequestEntity<>(updatedSpell, HttpMethod.PUT, uri);
+
+        ResponseEntity<Spell> response =
+                testRestTemplate.exchange(requestEntity, Spell.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        //Check spell has not updated
+        ResponseEntity<Spell> getResponse =
+                testRestTemplate.getForEntity("/api/v1/spells/" + firstSpell.getId(), Spell.class);
+
+        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
+        assertEquals(firstSpell, getResponse.getBody());
+    }
+
+    @Test
+    public void should_delete_spell() {
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/")
+                .pathSegment(firstSpell.getId()).build().toUri();
+
+        RequestEntity<Spell> requestEntity = new RequestEntity<>(HttpMethod.DELETE, uri);
+
+        ResponseEntity response =
+                testRestTemplate.exchange(requestEntity, String.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        //Check Spell deleted
+        ResponseEntity<Spell> getResponse =
+                testRestTemplate.getForEntity("/api/v1/spells/" + firstSpell.getId(), Spell.class);
+
+        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
+        assertEquals(firstSpell, getResponse.getBody());
+    }
+
     //Delete
-    //Failed update if params dont match
     //Spells by class
     //Spells by level
     //Spells by class & level
+    //All filters
 }

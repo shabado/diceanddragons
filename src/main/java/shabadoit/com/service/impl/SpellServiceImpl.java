@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import shabadoit.com.exceptions.ResourceNotFoundException;
 import shabadoit.com.exceptions.SpellManagementException;
 import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.spell.Spell;
@@ -70,19 +71,17 @@ public class SpellServiceImpl implements SpellService {
         if (getById(id) != null) {
             spellRepository.deleteById(id);
         } else {
-            throw new SpellManagementException("Spell with Id " + id + " does not exist");
+            throw new ResourceNotFoundException("Spell with Id " + id + " does not exist");
         }
     }
 
     @Override
-    public Spell getById(String id) {
+    public Optional<Spell> getById(String id) {
         Optional<Spell> spell = spellRepository.findById(id);
-        if (spell.isPresent()) {
-            return spell.get();
-        } else {
+        if (!spell.isPresent()) {
             LOGGER.info("Id " + id + " not found, no item returned");
-            return null;
         }
+        return spell;
     }
 
     @Override

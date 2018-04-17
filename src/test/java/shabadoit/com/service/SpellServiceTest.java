@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import shabadoit.com.exceptions.ResourceNotFoundException;
 import shabadoit.com.exceptions.SpellManagementException;
 import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.spell.Spell;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -217,8 +218,8 @@ public class SpellServiceTest {
 
         when(spellRepository.findById(id)).thenReturn(Optional.empty());
 
-        exception.expect(SpellManagementException.class);
-        exception.expectMessage("Spell with Id " + id + " does not exist");
+        exception.expect(ResourceNotFoundException.class);
+        exception.expectMessage("Spell with Id " + id + " not found.");
         spellService.deleteById(id);
     }
 
@@ -266,11 +267,11 @@ public class SpellServiceTest {
     }
 
     @Test
-    public void should_return_null_if_get_by_non_existent_id() {
+    public void should_return_empty__optional_if_get_by_non_existent_id() {
         String id = "notFoundId";
 
         when(spellRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertNull(spellService.getById(id));
+        assertFalse(spellService.getById(id).isPresent());
     }
 }

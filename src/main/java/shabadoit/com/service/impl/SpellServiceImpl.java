@@ -62,16 +62,16 @@ public class SpellServiceImpl implements SpellService {
                 throw new SpellManagementException("Supplied spell Ids do not match, unable to update");
             }
         } else {
-            throw new SpellManagementException("Spell with Id " + id + " does not exist");
+            throw new ResourceNotFoundException("Spell with Id " + id + " not found.");
         }
     }
 
     @Override
     public void deleteById(String id) {
-        if (getById(id) != null) {
+        if (getById(id).isPresent()) {
             spellRepository.deleteById(id);
         } else {
-            throw new ResourceNotFoundException("Spell with Id " + id + " does not exist");
+            throw new ResourceNotFoundException("Spell with Id " + id + " not found.");
         }
     }
 

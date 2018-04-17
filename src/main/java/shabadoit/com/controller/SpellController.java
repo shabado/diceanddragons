@@ -42,7 +42,7 @@ public class SpellController {
         if(spell.isPresent()){
             return new ResponseEntity<>(spell.get(), HttpStatus.OK);
         } else {
-            throw new ResourceNotFoundException("Spell with Id " + id + "not found.");
+            throw new ResourceNotFoundException("Spell with Id " + id + " not found.");
         }
     }
 

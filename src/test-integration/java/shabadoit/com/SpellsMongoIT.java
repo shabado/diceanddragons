@@ -69,7 +69,7 @@ public class SpellsMongoIT {
 
     @Test
     public void should_return_spell_by_Id() {
-        Spell spell = (Spell) spellController.getById(firstSpell.getId()).getBody();
+        Spell spell = spellController.getById(firstSpell.getId()).getBody();
 
         assertEquals(firstSpell, spell);
     }
@@ -219,8 +219,7 @@ public class SpellsMongoIT {
 
         List<Spell> expectedSpells = new ArrayList<>(Arrays.asList(secondSpell));
 
-        assertNull(spellController.getById(firstSpell.getId()));
-        assertEquals(expectedSpells, spellController.list());
+        assertEquals(expectedSpells, spellController.list().getBody());
     }
 
     @Test
@@ -232,7 +231,7 @@ public class SpellsMongoIT {
 
         spellController.update(firstSpell.getId(), updatedSpell);
 
-        assertEquals(updatedSpell, spellController.getById(firstSpell.getId()));
+        assertEquals(updatedSpell, spellController.getById(firstSpell.getId()).getBody());
     }
 
     @Test()

@@ -135,13 +135,4 @@ public class SpellFilterTest {
         verify(spellService).listAllSpells();
         assertEquals(returnedSpells, existingSpells);
     }
-
-    @Test
-    public void should_handle_null(){
-        Spell spell = new Spell (SpellLevel.LEVEL1, "name");
-
-        SpellFilter filter = SpellFilter.builder().characterClass(CharacterClass.BARD).build();
-
-        List<Spell> foundSpells = spellFilterService.filterSpells(filter);
-    }
 }

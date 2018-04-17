@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
+import shabadoit.com.model.character.CharacterClass;
+import shabadoit.com.model.filter.SpellFilter;
 import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.repository.SpellRepository;
@@ -22,6 +25,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -48,7 +52,10 @@ public class SpellsRestIT {
 
     @Before
     public void setUp() {
-        spells = new ArrayList<>(Arrays.asList(new Spell(SpellLevel.LEVEL1, firstName), new Spell(SpellLevel.LEVEL1, secondName)));
+        Spell spellOne = new Spell(SpellLevel.LEVEL1, firstName);
+        Spell spellTwo = new Spell(SpellLevel.LEVEL2, secondName);
+
+        spells = new ArrayList<>(Arrays.asList(spellOne, spellTwo));
         List<Spell> insertedSpells = spellRepository.insert(spells);
         firstSpell = insertedSpells.get(0);
         secondSpell = insertedSpells.get(1);
@@ -106,7 +113,7 @@ public class SpellsRestIT {
         URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/")
                 .pathSegment(firstSpell.getId()).build().toUri();
 
-        RequestEntity<Spell> requestEntity = new RequestEntity<>(updatedSpell, HttpMethod.PUT, uri);
+        RequestEntity requestEntity = new RequestEntity<>(updatedSpell, HttpMethod.PUT, uri);
 
         ResponseEntity<Spell> response =
                 testRestTemplate.exchange(requestEntity, Spell.class);
@@ -130,7 +137,7 @@ public class SpellsRestIT {
         URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/")
                 .pathSegment(firstSpell.getId()).build().toUri();
 
-        RequestEntity<Spell> requestEntity = new RequestEntity<>(updatedSpell, HttpMethod.PUT, uri);
+        RequestEntity requestEntity = new RequestEntity<>(updatedSpell, HttpMethod.PUT, uri);
 
         ResponseEntity<Spell> response =
                 testRestTemplate.exchange(requestEntity, Spell.class);
@@ -150,7 +157,7 @@ public class SpellsRestIT {
         URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/")
                 .pathSegment(firstSpell.getId()).build().toUri();
 
-        RequestEntity<Spell> requestEntity = new RequestEntity<>(HttpMethod.DELETE, uri);
+        RequestEntity requestEntity = new RequestEntity<>(HttpMethod.DELETE, uri);
 
         ResponseEntity response =
                 testRestTemplate.exchange(requestEntity, String.class);
@@ -161,13 +168,181 @@ public class SpellsRestIT {
         ResponseEntity<Spell> getResponse =
                 testRestTemplate.getForEntity("/api/v1/spells/" + firstSpell.getId(), Spell.class);
 
-        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
-        assertEquals(firstSpell, getResponse.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatusCode());
     }
 
-    //Delete
-    //Spells by class
-    //Spells by level
-    //Spells by class & level
-    //All filters
+    @Test
+    public void should_filter_by_class() {
+        List<Spell> dbSpells = setUpForFilterTests();
+
+        //Populate filter with first spell data to ensure it returns expected results
+        CharacterClass classToFilter = dbSpells.get(0).getSpellClasses().get(0);
+        SpellFilter filter = SpellFilter.builder().characterClass(classToFilter).build();
+
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/filter/")
+                .queryParam("name", filter.getName())
+                .queryParam("characterClass", filter.getCharacterClass())
+                .queryParam("spellLevel", filter.getSpellLevel())
+                .build().toUri();
+
+        RequestEntity requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        ResponseEntity<List<Spell>> response =
+                testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Spell>>() {
+                });
+
+        List<Spell> expectedSpells = dbSpells.stream()
+                .filter(x -> x.getSpellClasses().contains(classToFilter)).collect(Collectors.toList());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedSpells, response.getBody());
+    }
+
+    @Test
+    public void should_filter_by_level() {
+        List<Spell> dbSpells = setUpForFilterTests();
+
+        //Populate filter with first spell data to ensure it returns expected results
+        SpellLevel spellLevelFilter = dbSpells.get(0).getSpellLevel();
+        SpellFilter filter = SpellFilter.builder().spellLevel(spellLevelFilter).build();
+
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/filter/")
+                .queryParam("name", filter.getName())
+                .queryParam("characterClass", filter.getCharacterClass())
+                .queryParam("spellLevel", filter.getSpellLevel())
+                .build().toUri();
+
+        RequestEntity requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        ResponseEntity<List<Spell>> response =
+                testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Spell>>() {
+                });
+
+        List<Spell> expectedSpells = dbSpells.stream()
+                .filter(x -> x.getSpellLevel().equals(spellLevelFilter)).collect(Collectors.toList());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedSpells, response.getBody());
+    }
+
+    @Test
+    public void should_filter_by_class_and_level() {
+        List<Spell> dbSpells = setUpForFilterTests();
+
+        //Populate filter with first spell data to ensure it returns expected results
+        CharacterClass classToFilter = dbSpells.get(0).getSpellClasses().get(0);
+        SpellLevel spellLevelFilter = dbSpells.get(0).getSpellLevel();
+        SpellFilter filter = SpellFilter.builder().characterClass(classToFilter).spellLevel(spellLevelFilter).build();
+
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/filter/")
+                .queryParam("name", filter.getName())
+                .queryParam("characterClass", filter.getCharacterClass())
+                .queryParam("spellLevel", filter.getSpellLevel())
+                .build().toUri();
+
+        RequestEntity requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        ResponseEntity<List<Spell>> response =
+                testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Spell>>() {
+                });
+
+        List<Spell> expectedSpells = dbSpells.stream()
+                .filter(x -> x.getSpellLevel().equals(spellLevelFilter))
+                .filter(x -> x.getSpellClasses().contains(classToFilter))
+                .collect(Collectors.toList());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedSpells, response.getBody());
+    }
+
+    @Test
+    public void should_filter_by_name() {
+        SpellFilter filter = SpellFilter.builder().name(firstSpell.getName()).build();
+
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/filter/")
+                .queryParam("name", filter.getName())
+                .queryParam("characterClass", filter.getCharacterClass())
+                .queryParam("spellLevel", filter.getSpellLevel())
+                .build().toUri();
+
+        RequestEntity requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        ResponseEntity<List<Spell>> response =
+                testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Spell>>() {
+                });
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(firstSpell, response.getBody().get(0));
+    }
+
+    @Test
+    public void should_filter_on_partial_name_match() {
+        List<Spell> dbSpells = setUpForFilterTests();
+
+        //Populate filter with first spell data to ensure it returns expected results
+        String filterName = dbSpells.get(0).getName();
+        SpellFilter filter = SpellFilter.builder().name(filterName).build();
+
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/filter/")
+                .queryParam("name", filter.getName())
+                .queryParam("characterClass", filter.getCharacterClass())
+                .queryParam("spellLevel", filter.getSpellLevel())
+                .build().toUri();
+
+        RequestEntity requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        ResponseEntity<List<Spell>> response =
+                testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Spell>>() {
+                });
+
+        List<Spell> expectedSpells = dbSpells.stream()
+                .filter(x -> x.getName().contains(filterName)).collect(Collectors.toList());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedSpells, response.getBody());
+        assertEquals(2, response.getBody().size());
+    }
+
+    @Test
+    public void should_filter_by_all_filters() {
+        List<Spell> dbSpells = setUpForFilterTests();
+
+        //Populate filter with first spell data to ensure it returns expected results
+        CharacterClass classToFilter = dbSpells.get(0).getSpellClasses().get(0);
+        SpellLevel spellLevelFilter = dbSpells.get(0).getSpellLevel();
+        String filterName = dbSpells.get(0).getName();
+        SpellFilter filter = SpellFilter.builder().characterClass(classToFilter)
+                .name(filterName).spellLevel(spellLevelFilter).build();
+
+        URI uri = UriComponentsBuilder.fromUriString(testRestTemplate.getRootUri() + "/api/v1/spells/filter/")
+                .queryParam("name", filter.getName())
+                .queryParam("characterClass", filter.getCharacterClass())
+                .queryParam("spellLevel", filter.getSpellLevel())
+                .build().toUri();
+
+        RequestEntity requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+        ResponseEntity<List<Spell>> response =
+                testRestTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Spell>>() {
+                });
+
+        List<Spell> expectedSpells = dbSpells.stream()
+                .filter(x -> x.getSpellLevel().equals(spellLevelFilter))
+                .filter(x -> x.getSpellClasses().contains(classToFilter))
+                .filter(x -> x.getName().contains(filterName))
+                .collect(Collectors.toList());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedSpells, response.getBody());
+    }
+
+    private List<Spell> setUpForFilterTests() {
+        spellRepository.deleteAll();
+
+        Spell spellOne = new Spell(SpellLevel.LEVEL1, firstName);
+        spellOne.setSpellClasses(Arrays.asList(CharacterClass.BARD));
+        Spell spellTwo = new Spell(SpellLevel.LEVEL2, secondName);
+        spellTwo.setSpellClasses(Arrays.asList(CharacterClass.WIZARD));
+        Spell spellThree = new Spell(SpellLevel.LEVEL1, firstName + "extraChar");
+        spellThree.setSpellClasses(Arrays.asList(CharacterClass.BARD));
+        Spell spellFour = new Spell(SpellLevel.LEVEL2, secondName + "extraChar");
+        spellFour.setSpellClasses(Arrays.asList(CharacterClass.WIZARD));
+
+        spells = new ArrayList<>(Arrays.asList(spellOne, spellTwo, spellThree, spellFour));
+        return spellRepository.insert(spells);
+    }
 }

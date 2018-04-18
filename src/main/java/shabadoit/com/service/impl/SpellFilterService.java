@@ -3,13 +3,12 @@ package shabadoit.com.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import shabadoit.com.model.character.CharacterClass;
-import shabadoit.com.model.filter.SpellFilter;
+import shabadoit.com.model.spell.SpellFilter;
 import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.service.SpellService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service

@@ -1,4 +1,4 @@
-package shabadoit.com.model.filter;
+package shabadoit.com.model.spell;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

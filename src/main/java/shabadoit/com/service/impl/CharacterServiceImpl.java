@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import shabadoit.com.exceptions.CharacterManagementException;
 import shabadoit.com.exceptions.ResourceNotFoundException;
+import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.character.CharacterSheet;
 import shabadoit.com.repository.CharacterRepository;
 import shabadoit.com.service.CharacterService;
@@ -73,5 +74,15 @@ public class CharacterServiceImpl implements CharacterService {
             LOGGER.info("Id " + id + " not found, no item returned");
         }
         return character;
+    }
+
+    @Override
+    public CharacterSheet levelUp(String id, CharacterClass charClass) {
+        Optional<CharacterSheet> character = getById(id);
+        if (!character.isPresent()) {
+            throw new ResourceNotFoundException("Character with Id \" + id + \" not found.\"");
+        }
+        character.get().levelUp(charClass);
+        return characterRepository.save(character.get());
     }
 }

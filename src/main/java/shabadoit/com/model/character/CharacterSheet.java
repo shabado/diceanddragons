@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.Nulls;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import shabadoit.com.exceptions.CharacterManagementException;
@@ -25,6 +27,8 @@ import java.util.Map;
 @Setter
 @Document(collection = "charactersheets")
 public class CharacterSheet {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CharacterSheet.class);
+
     @Id
     private String id;
     private String race;
@@ -99,15 +103,16 @@ public class CharacterSheet {
         });
     }
 
-    public void alterHp(int change) {
+    public CharacterSheet alterHp(int change) {
         if (change < 0) {
             inflictDamage(change);
         } else {
             healDamage(change);
         }
+        return this;
     }
 
-    public void levelUp(CharacterClass leveledClass) {
+    public CharacterSheet levelUp(CharacterClass leveledClass) {
         if (characterLevel >= 20) {
             throw new CharacterManagementException("Unable to increase level past 20.");
         }
@@ -118,6 +123,7 @@ public class CharacterSheet {
             classes.put(leveledClass, new ClassBlock(1));
         }
         updateDerivedAttributes();
+        return this;
     }
 
     private void inflictDamage(int damage) {
@@ -157,8 +163,8 @@ public class CharacterSheet {
         updateDerivedAttributes();
     }
 
-    public void addClass(CharacterClass characterClass, ClassBlock classBlock) {
-        if (classes.get(characterClass) != null) {
+    public CharacterSheet addClass(CharacterClass characterClass, ClassBlock classBlock) {
+        if (classes.containsKey(characterClass)) {
             throw new CharacterManagementException(characterClass.getValue() + " already exists");
         }
         if (getCharacterLevel() + classBlock.getClassLevel() > 20) {
@@ -166,6 +172,16 @@ public class CharacterSheet {
         }
         classes.put(characterClass, classBlock);
         updateDerivedAttributes();
+        return this;
+    }
+
+    public CharacterSheet removeClass(CharacterClass characterClass) {
+        if (!classes.containsKey(characterClass)) {
+            throw new CharacterManagementException(characterClass.getValue() + " does not exist exists");
+        }
+        classes.remove(characterClass);
+        updateDerivedAttributes();
+        return this;
     }
 
     //ToDo implement a way of rolling a save/hit/abilitycheck when rolling is

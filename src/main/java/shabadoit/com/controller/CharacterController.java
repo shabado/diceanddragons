@@ -7,7 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import shabadoit.com.exceptions.ResourceNotFoundException;
+import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.character.CharacterSheet;
+import shabadoit.com.model.character.ClassBlock;
 import shabadoit.com.service.CharacterService;
 import shabadoit.com.validator.CharacterSheetValidator;
 
@@ -62,5 +64,12 @@ public class CharacterController {
     @ResponseStatus(value = HttpStatus.OK)
     public void delete(@PathVariable String id) {
         characterService.deleteById(id);
+    }
+
+    @RequestMapping(value = "{id}/levelup/{charClass}", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public CharacterSheet levelUp(@PathVariable String id,
+                        @PathVariable CharacterClass charClass) {
+        return characterService.levelUp(id, charClass);
     }
 }

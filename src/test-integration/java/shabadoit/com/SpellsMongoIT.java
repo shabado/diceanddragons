@@ -15,11 +15,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import shabadoit.com.controller.SpellController;
 import shabadoit.com.exceptions.SpellManagementException;
 import shabadoit.com.model.character.CharacterClass;
-import shabadoit.com.model.filter.SpellFilter;
+import shabadoit.com.model.spell.SpellFilter;
 import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.repository.SpellRepository;
-import shabadoit.com.service.impl.SpellFilterService;
 
 import java.util.ArrayList;
 import java.util.Arrays;

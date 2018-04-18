@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.util.UriComponentsBuilder;
 import shabadoit.com.model.character.CharacterClass;
-import shabadoit.com.model.filter.SpellFilter;
+import shabadoit.com.model.spell.SpellFilter;
 import shabadoit.com.model.spell.Spell;
 import shabadoit.com.model.spell.SpellLevel;
 import shabadoit.com.repository.SpellRepository;

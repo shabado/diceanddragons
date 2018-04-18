@@ -1,5 +1,6 @@
 package shabadoit.com.service;
 
+import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.character.CharacterSheet;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface CharacterService {
     CharacterSheet updateById(String id, CharacterSheet characterSheet);
     void deleteById(String id);
     Optional<CharacterSheet> getById(String id);
+    CharacterSheet levelUp(String id, CharacterClass charClass);
 }

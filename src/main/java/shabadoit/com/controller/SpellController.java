@@ -5,15 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shabadoit.com.exceptions.ResourceNotFoundException;
-import shabadoit.com.exceptions.SpellManagementException;
-import shabadoit.com.model.filter.SpellFilter;
+import shabadoit.com.model.spell.SpellFilter;
 import shabadoit.com.model.spell.Spell;
 import shabadoit.com.service.SpellService;
 import shabadoit.com.service.impl.SpellFilterService;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 

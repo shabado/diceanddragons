@@ -86,19 +86,16 @@ public class SpellServiceImpl implements SpellService {
 
     @Override
     public List<Spell> listByClass(CharacterClass characterClass) {
-        //TODO Add error handling
         return spellRepository.findBySpellClasses(characterClass);
     }
 
     @Override
     public List<Spell> listBySpellLevel(SpellLevel spellLevel) {
-        //TODO Add error handling
         return spellRepository.findBySpellLevel(spellLevel);
     }
 
     @Override
     public List<Spell> listByClassAndLevel(CharacterClass characterClass, SpellLevel spellLevel) {
-        //TODO Add error handling
         return spellRepository.findBySpellClassesAndSpellLevel(characterClass, spellLevel);
     }
 }

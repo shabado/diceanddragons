@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import shabadoit.com.exceptions.CharacterManagementException;
+import shabadoit.com.exceptions.ResourceNotFoundException;
 import shabadoit.com.model.character.CharacterSheet;
 import shabadoit.com.repository.CharacterRepository;
 import shabadoit.com.service.CharacterService;
@@ -17,6 +18,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CharacterServiceImpl.class);
 
+    @Autowired
     private CharacterRepository characterRepository;
 
     @Autowired
@@ -33,13 +35,13 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public List<CharacterSheet> getAllCharacters() {
+    public List<CharacterSheet> listAllCharacters() {
         return characterRepository.findAll();
     }
 
     @Override
     public CharacterSheet getByName(String name) {
-        return characterRepository.findByName(name);
+        return characterRepository.getByName(name);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class CharacterServiceImpl implements CharacterService {
                 throw new CharacterManagementException("Supplied character Ids do not match, unable to update");
             }
         } else {
-            throw new CharacterManagementException("Character with Id " + id + " does not exist");
+            throw new ResourceNotFoundException("Character with Id \" + id + \" not found.\"");
         }
     }
 
@@ -60,18 +62,16 @@ public class CharacterServiceImpl implements CharacterService {
         if (getById(id) != null) {
             characterRepository.deleteById(id);
         } else {
-            throw new CharacterManagementException("Character with Id " + id + " does not exist");
+            throw new ResourceNotFoundException("Character with Id " + id + " not found.");
         }
     }
 
     @Override
-    public CharacterSheet getById(String id) {
+    public Optional<CharacterSheet> getById(String id) {
         Optional<CharacterSheet> character = characterRepository.findById(id);
-        if (character.isPresent()) {
-            return character.get();
-        } else {
+        if (!character.isPresent()) {
             LOGGER.info("Id " + id + " not found, no item returned");
-            return null;
         }
+        return character;
     }
 }

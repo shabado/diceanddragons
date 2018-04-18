@@ -1,6 +1,6 @@
 package shabadoit.com.repository;
 
-        import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Query;
         import shabadoit.com.model.character.CharacterClass;
         import shabadoit.com.model.spell.Spell;
         import org.springframework.data.mongodb.repository.MongoRepository;

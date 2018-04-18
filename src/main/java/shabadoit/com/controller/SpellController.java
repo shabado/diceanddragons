@@ -12,6 +12,7 @@ import shabadoit.com.service.SpellService;
 import shabadoit.com.service.impl.SpellFilterService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class SpellController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Spell>> list() {
-        return new ResponseEntity<>(spellService.listAllSpells(), HttpStatus.OK);
+        return ResponseEntity.ok(spellService.listAllSpells());
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -40,20 +41,20 @@ public class SpellController {
         Optional<Spell> spell = spellService.getById(id);
 
         if(spell.isPresent()){
-            return new ResponseEntity<>(spell.get(), HttpStatus.OK);
+            return ResponseEntity.ok(spell.get());
         } else {
             throw new ResourceNotFoundException("Spell with Id " + id + " not found.");
         }
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Spell> create(@RequestBody Spell spell) {
-        return new ResponseEntity<>(spellService.addSpell(spell), HttpStatus.OK);
+    public ResponseEntity<Spell> create(@Valid @RequestBody Spell spell) {
+        return ResponseEntity.ok(spellService.addSpell(spell));
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Spell> update(@PathVariable String id, @RequestBody Spell spell) {
-        return new ResponseEntity<>(spellService.updateById(id, spell), HttpStatus.OK);
+    public ResponseEntity<Spell> update(@Valid @PathVariable String id, @RequestBody Spell spell) {
+        return ResponseEntity.ok(spellService.updateById(id, spell));
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
@@ -64,6 +65,6 @@ public class SpellController {
 
     @RequestMapping(value = "filter", method = RequestMethod.GET)
     public ResponseEntity<List<Spell>> filterSpells(SpellFilter spellFilter) {
-        return new ResponseEntity<>(spellFilterService.filterSpells(spellFilter), HttpStatus.OK);
+        return ResponseEntity.ok(spellFilterService.filterSpells(spellFilter));
     }
 }

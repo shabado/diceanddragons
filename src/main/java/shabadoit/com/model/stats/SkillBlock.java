@@ -1,12 +1,8 @@
 package shabadoit.com.model.stats;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class SkillBlock {
     private SkillOrSave acrobatics;
     private SkillOrSave animalHandling;
@@ -26,4 +22,8 @@ public class SkillBlock {
     private SkillOrSave sleightOfHand;
     private SkillOrSave stealth;
     private SkillOrSave survival;
+
+    private SkillBlock() {
+        //jackson constructor
+    }
 }

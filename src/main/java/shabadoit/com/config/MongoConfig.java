@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 //TODO revert this to !test when ready to deploy somewhere
 @Profile("dev")

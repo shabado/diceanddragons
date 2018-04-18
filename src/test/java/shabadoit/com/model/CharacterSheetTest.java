@@ -3,12 +3,13 @@ package shabadoit.com.model;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import shabadoit.com.exceptions.CharacterManagementException;
 import shabadoit.com.model.character.CharacterClass;
 import shabadoit.com.model.character.CharacterSheet;
 import shabadoit.com.model.character.ClassBlock;
 import shabadoit.com.model.character.HitDie;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -56,9 +57,9 @@ public class CharacterSheetTest {
 
     @Test
     public void should_increment_character_level_on_level_up() {
-        ClassBlock classBlock = new ClassBlock(1, CharacterClass.BARD);
+        ClassBlock classBlock = new ClassBlock(1);
         CharacterSheet character = new CharacterSheet();
-        character.setClasses(Arrays.asList(classBlock));
+        character.addClass(CharacterClass.BARD, classBlock);
 
         character.levelUp(CharacterClass.BARD);
 
@@ -71,28 +72,59 @@ public class CharacterSheetTest {
         character.levelUp(CharacterClass.BARD);
 
         assertEquals(1, character.getCharacterLevel());
-        assertTrue(character.getClasses().stream().anyMatch(x -> x.getClassName() == CharacterClass.BARD));
+        assertTrue(character.getClasses().containsKey(CharacterClass.BARD));
     }
 
     @Test
-    public void should_set_hit_die() {
-        ClassBlock classBlock = new ClassBlock(3, CharacterClass.BARD);
+    public void should_get_hit_die() {
+        ClassBlock classBlock = new ClassBlock(3);
         CharacterSheet character = new CharacterSheet();
-        character.setClasses(Arrays.asList(classBlock));
+        character.addClass(CharacterClass.BARD, classBlock);
 
-        character.setTotalHitDice();
         Map<HitDie, Integer> hitDie = character.getTotalHitDice();
 
         assertEquals(3, hitDie.get(CharacterClass.BARD.getHitDie()).intValue());
     }
 
     @Test
-    public void should_update_hit_die_on_level_up() {
-        ClassBlock classBlock = new ClassBlock(3, CharacterClass.BARD);
+    public void should_get_hit_die_for_multiclass_with_same_die() {
+        ClassBlock classBlock = new ClassBlock(3);
+        ClassBlock classBlockTwo = new ClassBlock(12);
         CharacterSheet character = new CharacterSheet();
-        character.setClasses(Arrays.asList(classBlock));
+        Map<CharacterClass, ClassBlock> classMap = new HashMap<>();
+        classMap.put(CharacterClass.BARD, classBlock);
+        classMap.put(CharacterClass.WARLOCK, classBlockTwo);
 
-        character.setTotalHitDice();
+        character.setClasses(classMap);
+
+        Map<HitDie, Integer> hitDie = character.getTotalHitDice();
+
+        assertEquals(15, hitDie.get(CharacterClass.BARD.getHitDie()).intValue());
+    }
+
+    @Test
+    public void should_get_hit_die_for_multiclass_with_different_die() {
+        ClassBlock classBlock = new ClassBlock(3);
+        ClassBlock classBlockTwo = new ClassBlock(12);
+        CharacterSheet character = new CharacterSheet();
+        Map<CharacterClass, ClassBlock> classMap = new HashMap<>();
+        classMap.put(CharacterClass.BARD, classBlock);
+        classMap.put(CharacterClass.FIGHTER, classBlockTwo);
+
+        character.setClasses(classMap);
+
+        Map<HitDie, Integer> hitDie = character.getTotalHitDice();
+
+        assertEquals(3, hitDie.get(CharacterClass.BARD.getHitDie()).intValue());
+        assertEquals(12, hitDie.get(CharacterClass.FIGHTER.getHitDie()).intValue());
+    }
+
+
+    @Test
+    public void should_update_hit_die_on_level_up() {
+        ClassBlock classBlock = new ClassBlock(3);
+        CharacterSheet character = new CharacterSheet();
+        character.addClass(CharacterClass.BARD, classBlock);
 
         character.levelUp(CharacterClass.BARD);
 
@@ -103,37 +135,52 @@ public class CharacterSheetTest {
 
     @Test
     public void should_set_character_level() {
-        ClassBlock classBlock = new ClassBlock(3, CharacterClass.BARD);
+        ClassBlock classBlock = new ClassBlock(3);
         CharacterSheet character = new CharacterSheet();
-        character.setClasses(Arrays.asList(classBlock));
-
-        character.setCharacterLevel();
+        character.addClass(CharacterClass.BARD, classBlock);
 
         assertEquals(3, character.getCharacterLevel());
     }
 
     @Test
     public void should_set_character_level_multiple_classes() {
-        ClassBlock classBlock = new ClassBlock(3, CharacterClass.BARD);
-        ClassBlock classBlockTwo = new ClassBlock(12, CharacterClass.WIZARD);
+        ClassBlock classBlock = new ClassBlock(3);
+        ClassBlock classBlockTwo = new ClassBlock(12);
         CharacterSheet character = new CharacterSheet();
-        character.setClasses(Arrays.asList(classBlock, classBlockTwo));
+        Map<CharacterClass, ClassBlock> classMap = new HashMap<>();
+        classMap.put(CharacterClass.BARD, classBlock);
+        classMap.put(CharacterClass.WARLOCK, classBlockTwo);
 
-        character.setCharacterLevel();
+        character.setClasses(classMap);
 
         assertEquals(15, character.getCharacterLevel());
     }
 
     @Test
     public void should_throw_if_levelling_past_20() {
-        ClassBlock classBlock = new ClassBlock(8, CharacterClass.BARD);
-        ClassBlock classBlockTwo = new ClassBlock(12, CharacterClass.WIZARD);
+        ClassBlock classBlock = new ClassBlock(8);
+        ClassBlock classBlockTwo = new ClassBlock(12);
         CharacterSheet character = new CharacterSheet();
-        character.setClasses(Arrays.asList(classBlock, classBlockTwo));
+        Map<CharacterClass, ClassBlock> classMap = new HashMap<>();
+        classMap.put(CharacterClass.BARD, classBlock);
+        classMap.put(CharacterClass.WARLOCK, classBlockTwo);
 
-        character.levelUp(CharacterClass.BARD);
+        character.setClasses(classMap);
 
-        exception.expect(IllegalStateException.class);
+        exception.expect(CharacterManagementException.class);
         exception.expectMessage("Unable to increase level past 20.");
+        character.levelUp(CharacterClass.BARD);
+    }
+
+    @Test
+    public void should_consume_temp_hp_first() {
+        CharacterSheet character = new CharacterSheet();
+        character.setTemporaryHp(5);
+        character.setMaxHP(50);
+
+        character.alterHp(-10);
+
+        assertEquals(45, character.getCurrentHP());
+        assertEquals(0, character.getTemporaryHp());
     }
 }

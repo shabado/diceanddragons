@@ -3,12 +3,13 @@ package shabadoit.com.service;
 import shabadoit.com.model.character.CharacterSheet;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CharacterService {
     CharacterSheet addCharacter(final CharacterSheet characterSheet);
-    List<CharacterSheet> getAllCharacters();
+    List<CharacterSheet> listAllCharacters();
     CharacterSheet getByName(String name);
     CharacterSheet updateById(String id, CharacterSheet characterSheet);
     void deleteById(String id);
-    CharacterSheet getById(String id);
+    Optional<CharacterSheet> getById(String id);
 }

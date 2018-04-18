@@ -1,11 +1,17 @@
 package shabadoit.com.model.stats;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Positive;
+
 @Data
-@AllArgsConstructor
 public class Stat {
     private StatName statName;
-    private int modifier;
+    @Positive(message = "{validation.integer.positive}") @Max(value = 20, message = "{validation.integer.statMax}")
+    private int value;
+
+    private Stat() {
+        //jacksonconstructor
+    }
 }

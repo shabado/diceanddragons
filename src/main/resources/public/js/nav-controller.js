@@ -15,6 +15,10 @@ angular.module('navController', [])
 				url: '#/'
 			},
 			{
+                name: 'Characters',
+                url: '#/characters'
+            },
+			{
 				name: 'Spells',
 				url: '#/spells'
 			}

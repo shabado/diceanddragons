@@ -11,10 +11,10 @@ body {
 .pad-top {
   padding-top: 60px;
 }
-.spelltable tr td:nth-child(2) {
+.listtable tr td:nth-child(2) {
   width: 150px;
 }
-.spelltable tr:nth-child(1) td {
+.listtable tr:nth-child(1) td {
   border-top: none;
 }
 /* Have to set height explicity on ui-view

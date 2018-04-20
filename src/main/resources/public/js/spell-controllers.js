@@ -1,4 +1,4 @@
-angular.module('app.controllers', []).controller('SpellListController', function($scope, $state, popupService, $window, Spell) {
+angular.module('app.spellControllers', []).controller('SpellListController', function($scope, $state, popupService, $window, Spell) {
   $scope.spells = Spell.query(); //fetch all spells. Issues a GET to /api/vi/spells
 
   $scope.deleteSpell = function(spell) { // Delete a Spell. Issues a DELETE to /api/v1/spells/:id

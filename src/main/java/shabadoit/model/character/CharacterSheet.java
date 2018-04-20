@@ -3,6 +3,7 @@ package shabadoit.model.character;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,17 +15,20 @@ import shabadoit.exceptions.CharacterManagementException;
 import shabadoit.model.stats.SaveBlock;
 import shabadoit.model.stats.SkillBlock;
 import shabadoit.model.stats.StatBlock;
+import shabadoit.serializer.CharacterSheetDeserializer;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 @Getter
 @Setter
+@JsonDeserialize(using = CharacterSheetDeserializer.class)
 @Document(collection = "charactersheets")
 public class CharacterSheet {
     private static final Logger LOGGER = LoggerFactory.getLogger(CharacterSheet.class);
@@ -32,7 +36,10 @@ public class CharacterSheet {
     @Id
     private String id;
     private String race;
+    @NotNull(message = "{validation.field.required}")
     private String name;
+    @Setter(AccessLevel.NONE)
+    private int proficiencyBonus;
     @PositiveOrZero(message = "{validation.integer.notNegative}")
     private int currentHP;
     @Positive(message = "{validation.integer.positive}")
@@ -49,9 +56,11 @@ public class CharacterSheet {
     @JsonSetter(nulls = Nulls.SKIP)
     private Map<CharacterClass, ClassBlock> classes;
     @Valid
+    @NotNull
     private StatBlock stats;
     private SaveBlock saves;
     private SkillBlock skills;
+    private List<String> proficiencies;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Setter(AccessLevel.NONE)
     private Map<HitDie, Integer> totalHitDice;
@@ -64,10 +73,11 @@ public class CharacterSheet {
     private void updateDerivedAttributes() {
         setTotalHitDice();
         setCharacterLevel();
+        setProficiencyBonus();
     }
 
     public void setMaxHP(int hp) {
-        //ToDo Alter this to roll the Hp when I've added some kind of rolling feature
+        //TODO Alter this to roll the Hp when I've added some kind of rolling feature
         //If you're unconscious this will cause a 'bug' where increasing max hp when unconscious
         //updates current hp to max. Can't think why that would happen, but could add a flag to check.
         if (currentHP == 0 || currentHP == maxHP) {
@@ -89,6 +99,11 @@ public class CharacterSheet {
             i += charClass.getClassLevel();
         }
         characterLevel = i;
+    }
+
+    private void setProficiencyBonus() {
+        int val = (characterLevel-1)/4;
+        proficiencyBonus = val-(val%1)+2;
     }
 
     private void setTotalHitDice() {
@@ -184,5 +199,5 @@ public class CharacterSheet {
         return this;
     }
 
-    //ToDo implement a way of rolling a save/hit/abilitycheck when rolling is
+    //TODO implement a way of rolling a save/hit/abilitycheck when rolling is
 }

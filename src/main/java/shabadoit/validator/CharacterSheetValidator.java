@@ -20,6 +20,6 @@ public class CharacterSheetValidator implements Validator {
     }
 
     private boolean validateMaxLevel(int charLevel) {
-        return charLevel >= 20;
+        return charLevel > 20;
     }
 }

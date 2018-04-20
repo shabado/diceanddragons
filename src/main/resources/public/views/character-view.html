@@ -1,0 +1,138 @@
+<div class="container pad-top">
+    <table class="table listtable">
+        <h3>Details for {{character.name}}</h3>
+        <tr>
+            <td class="col-sm-4">Name</td>
+            <td>{{character.name}}</td>
+        </tr>
+        <tr>
+            <td>Character Level</td>
+            <td>{{character.characterLevel}}</td>
+        </tr>
+    </table>
+
+    <div id="stat-table" class="table-responsive col-xs-6">
+        <table class="table listtable">
+            <h4>Stats</h4>
+            <td>Name</td>
+            <td></td>
+            <td class="float-right">
+                Modifier
+            </td>
+            <tr>
+                <td>Strength:</td>
+                <td>{{character.stats.strength.value}}</td>
+                <td class="float-right">
+                    ( {{getModifier(character.stats.strength.value)}} )
+                </td>
+
+            </tr>
+            <tr>
+                <td>Constitution:</td>
+                <td>{{character.stats.constitution.value}}</td>
+                <td class="float-right">
+                    ( {{getModifier(character.stats.constitution.value)}} )
+                </td>
+            </tr>
+            <tr>
+                <td>Dexterity:</td>
+                <td>{{character.stats.dexterity.value}}</td>
+                <td class="float-right">
+                    ( {{getModifier(character.stats.dexterity.value)}} )
+                </td>
+            </tr>
+            <tr>
+                <td>Intelligence:</td>
+                <td>{{character.stats.intelligence.value}}</td>
+                <td class="float-right">
+                    ( {{getModifier(character.stats.intelligence.value)}} )
+                </td>
+            </tr>
+            <tr>
+                <td>Wisdom:</td>
+                <td>{{character.stats.wisdom.value}}</td>
+                <td class="float-right">
+                    ( {{getModifier(character.stats.wisdom.value)}} )
+                </td>
+            </tr>
+            <tr>
+                <td>Charisma:</td>
+                <td>{{character.stats.charisma.value}}</td>
+                <td class="float-right">
+                    ( {{getModifier(character.stats.charisma.value)}} )
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div *ngIf="character.saves" id="save-table"class="table-responsive col-xs-6">
+            <table class="table listtable">
+                <h4>Saves</h4>
+                <td>Name</td>
+                <td></td>
+                <td class="float-right">
+                    Proficient?
+                </td>
+                <tr>
+                    <td>Strength:</td>
+                    <td class="float-right">
+                        {{getSaveModifier('strength', character)}}
+                    </td>
+                    <td>
+                        <span ng-if="character.saves.strength.proficient" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!character.saves.strength.proficient" class="glyphicon glyphicon-remove"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Constitution:</td>
+                    <td>
+                        {{getSaveModifier('constitution', character)}}
+                    </td>
+                    <td>
+                        <span ng-if="character.saves.constitution.proficient" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!character.saves.constitution.proficient" class="glyphicon glyphicon-remove"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Dexterity:</td>
+                    <td class="float-right">
+                        {{getSaveModifier('dexterity', character)}}
+                    </td>
+                    <td>
+                        <span ng-if="character.saves.dexterity.proficient" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!character.saves.dexterity.proficient" class="glyphicon glyphicon-remove"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Intelligence:</td>
+                    <td class="float-right">
+                        {{getSaveModifier('intelligence', character)}}
+                    </td>
+                    <td>
+                        <span ng-if="character.saves.intelligence.proficient" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!character.saves.intelligence.proficient" class="glyphicon glyphicon-remove"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Wisdom:</td>
+                    <td class="float-right">
+                        {{getSaveModifier('wisdom', character)}}
+                    </td>
+                    <td>
+                        <span ng-if="character.saves.wisdom.proficient" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!character.saves.wisdom.proficient" class="glyphicon glyphicon-remove"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Charisma:</td>
+                    <td class="float-right">
+                        {{getSaveModifier('charisma', character)}}
+                    </td>
+                    <td>
+                        <span ng-if="character.saves.charisma.proficient" class="glyphicon glyphicon-ok"></span>
+                        <span ng-if="!character.saves.charisma.proficient" class="glyphicon glyphicon-remove"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

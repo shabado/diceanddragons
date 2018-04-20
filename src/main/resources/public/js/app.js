@@ -1,5 +1,5 @@
 (function() {
-	var app = angular.module('app', ['btorfs.multiselect', 'ui.router', 'navController', 'ngAnimate', 'ui.bootstrap', 'ngResource', 'app.controllers', 'app.services' ])
+	var app = angular.module('app', ['btorfs.multiselect', 'ui.router', 'navController', 'ngAnimate', 'ui.bootstrap', 'ngResource', 'app.spellControllers', 'app.charControllers','app.services' ])
 
 	// define for requirejs loaded modules
 	define('app', [], function() { return app; });
@@ -61,7 +61,23 @@
 	        url:'/spells/:id/edit',
 	        templateUrl: viewsPrefix + 'spell-edit.html',
 	        controller:'SpellEditController'
-	    })
+	    }).state('characters',{
+            url:'/characters',
+          	templateUrl: viewsPrefix + 'characters.html',
+          	controller:'CharacterListController'
+        }).state('viewCharacter',{
+        	url:'/characters/:id/view',
+        	templateUrl: viewsPrefix + 'character-view.html',
+        	controller:'CharacterViewController'
+        }).state('newCharacter',{
+            url:'/characters/new',
+            templateUrl: viewsPrefix + 'character-add.html',
+        	controller:'CharacterCreateController'
+        }).state('editCharacter',{
+            url:'/characters/:id/edit',
+            templateUrl: viewsPrefix + 'character-edit.html',
+            controller:'CharacterEditController'
+        })
 	})
 	.directive('updateTitle', ['$rootScope', '$timeout',
 		function($rootScope, $timeout) {

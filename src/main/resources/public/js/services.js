@@ -4,7 +4,13 @@ angular.module('app.services', []).factory('Spell', function($resource) {
       method: 'PUT'
     }
   });
-}).service('popupService',function($window){
+}).factory('Character', function($resource) {
+    return $resource('/api/v1/characters/:id', { id: '@id' }, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }).service('popupService',function($window){
     this.showPopup=function(message){
         return $window.confirm(message);
     }

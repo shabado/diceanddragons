@@ -8,7 +8,7 @@ public enum CharacterClass {
     BARD("Bard", HitDie.DEIGHT, StatName.CHARISMA),
     CLERIC("Cleric", HitDie.DEIGHT, StatName.WISDOM),
     DRUID("Druid", HitDie.DEIGHT, StatName.WISDOM),
-    FIGHTER("Figher", HitDie.DTEN, null),
+    FIGHTER("Fighter", HitDie.DTEN, null),
     PALADIN("Paladin", HitDie.DTEN, StatName.CHARISMA),
     RANGER("Ranger", HitDie.DTEN, StatName.WISDOM),
     ROGUE("Rogue", HitDie.DEIGHT, null),

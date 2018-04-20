@@ -1,0 +1,32 @@
+<div class="container pad-top">
+    <a ui-sref="newCharacter" class="btn-primary btn-lg nodecoration">Add New Character</a>
+    <table class="table listtable">
+        <tr>
+            <td><h3>All Characters</h3></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b>Name</b></td>
+            <td><b>Level</b></td>
+            <td><b>Classes (Class Level)</b></td>
+            <td></td>
+        </tr>
+
+        <tr ng-repeat="character in characters">
+            <td>{{character.name}}</td>
+            <td>{{character.characterLevel}}</td>
+            <td>
+                <table class = "table">
+                    <tr ng-repeat="(key, value) in character.classes">
+                        <td>{{key}} ({{value.classLevel}})</td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <a class="btn btn-primary" ui-sref="viewCharacter({id:character.id})">View</a>
+                <a class="btn btn-danger" ng-click="deleteCharacter(character)">Delete</a>
+            </td>
+        </tr>
+        <td></td><td></td><td></td><td></td>
+    </table>
+</div>

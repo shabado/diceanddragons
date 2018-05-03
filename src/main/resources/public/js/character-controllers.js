@@ -33,6 +33,24 @@ angular.module('app.charControllers', []).controller('CharacterListController', 
     $scope.character = new Character();  //create new character instance. Properties will be set via ng-model on UI
 
     $scope.classes = getClasses();
+    $scope.character.classes = new Object();
+
+  $scope.addNewCharClass = function() {
+    $scope.character.classes[''] = {'classLevel':1};
+  };
+
+  $scope.filterChanged = function(newValue, oldValue){
+    if (oldValue === '') {
+         $scope.character.classes[newValue] = {'classLevel':1};
+         if ($scope.character.classes.hasOwnProperty('')) {
+             delete $scope.character.classes[''];
+         }
+    }
+   };
+
+  $scope.removeCharClass = function(key) {
+    delete $scope.character.classes[key];
+  };
 
   $scope.addCharacter = function() { //create a new character. Issues a POST to /api/v1/characters
     $scope.character.$save(function() {
@@ -50,6 +68,24 @@ angular.module('app.charControllers', []).controller('CharacterListController', 
     $scope.character = Character.get({ id: $stateParams.id });
   };
 
+  $scope.addNewCharClass = function() {
+    $scope.character.classes[''] = {'classLevel':1};
+  };
+
+  $scope.filterChanged = function(newValue, oldValue){
+    if (oldValue === '') {
+         $scope.character.classes[newValue] = {'classLevel':1};
+         if ($scope.character.classes.hasOwnProperty('')) {
+             delete $scope.character.classes[''];
+         }
+    }
+   };
+
+  $scope.removeCharClass = function(key) {
+    delete $scope.character.classes[key];
+  };
+
+  $scope.classes = getClasses();
   $scope.loadCharacter(); // Load a character which can be edited on UI
 });
 
@@ -60,4 +96,8 @@ function getStatModifier(stat) {
         } else {
             return mod;
         }
+}
+
+function getClasses() {
+    return ["Bard","Cleric","Druid","Paladin","Ranger","Sorcerer","Warlock","Wizard"];
 }

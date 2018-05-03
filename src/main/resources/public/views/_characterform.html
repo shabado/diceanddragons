@@ -5,6 +5,50 @@
     </div>
 </div>
 <div class="form-group">
+    <label for="classes" class="col-sm-2 control-label">Classses</label>
+    <div class="col-sm-2">
+        <button type="button" class="form-control" ng-click="addNewCharClass()">Add Class</button>
+    </div>
+    <fieldset id="classes" class="col-sm-2" ng-repeat="(charClass,val) in character.classes">
+        <select ng-change="filterChanged(charClass, '{{charClass}}')" required class="form-control"  ng-model="charClass" ng-options="x for x in classes" placeholder="Select Classes">
+        </select>
+        <input class="form-control " type="number" min="1" max="20" ng-model="val.classLevel" placeholder="Level">
+        <button class="btn btn-danger" type="button" class="form-control" ng-click="removeCharClass(charClass)">Remove</button>
+    </fieldset>
+</div>
+<div class="form-group">
+    <label for="maxHP" class="col-sm-2 control-label">Max Hp</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.maxHP" min="1" class="form-control" id="maxHP" placeholder="Max HP"/>
+    </div>
+</div>
+<div class="form-group">
+    <label for="strength" class="col-sm-2 control-label">Str</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.stats.strength.value" min="1" max="20" class="form-control" id="strength" placeholder="Strength"/>
+    </div>
+    <label for="constitution" class="col-sm-2 control-label">Con</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.stats.constitution.value" min="1" max="20" class="form-control" id="constitution" placeholder="Constitution"/>
+    </div>
+    <label for="dexterity" class="col-sm-2 control-label">Dex</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.stats.dexterity.value" min="1" max="20" class="form-control" id="dexterity" placeholder="Dexterity"/>
+    </div>
+    <label for="intelligence" class="col-sm-2 control-label">Int</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.stats.intelligence.value" min="1" max="20" class="form-control" id="intelligence" placeholder="Intelligence"/>
+    </div>
+    <label for="wisdom" class="col-sm-2 control-label">Wis</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.stats.wisdom.value" min="1" max="20" class="form-control" id="wisdom" placeholder="Wisdom"/>
+    </div>
+    <label for="charisma" class="col-sm-2 control-label">Cha</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.stats.charisma.value" min="1" max="20" class="form-control" id="charisma" placeholder="Charisma"/>
+    </div>
+</div>
+<div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
         <input type="submit" class="btn btn-danger" value="Save"/>
         <a class="btn btn-primary" ui-sref="characters">Back</a>

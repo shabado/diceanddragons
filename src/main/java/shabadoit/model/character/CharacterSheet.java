@@ -18,6 +18,7 @@ import shabadoit.model.stats.StatBlock;
 import shabadoit.serializer.CharacterSheetDeserializer;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -168,13 +169,17 @@ public class CharacterSheet {
         }
     }
 
-    @SafeVarargs
-    public final void setClasses(Map<CharacterClass, ClassBlock>... updatedClasses) {
-        classes = new HashMap<>();
-        for (Map<CharacterClass, ClassBlock> classMap : updatedClasses) {
-            classMap.forEach((charClass, classBlock) ->
-                    classes.put(charClass, classBlock));
+    public final void setClasses(Map<CharacterClass, ClassBlock> updatedClasses) {
+        int updatedLevel = 0;
+        for (ClassBlock charClass : updatedClasses.values()) {
+            updatedLevel += charClass.getClassLevel();
         }
+
+        if (updatedLevel > 20) {
+            throw new CharacterManagementException("Total level cannot exceed 20.");
+        }
+
+        classes = updatedClasses;
         updateDerivedAttributes();
     }
 

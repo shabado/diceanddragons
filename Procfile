@@ -1,0 +1,1 @@
+web: java -Dspring.profiles.active=heroku -Dmongodb.password=$PASSWORD -jar target/diceanddragons-0.0.1.jar

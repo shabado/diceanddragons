@@ -175,12 +175,12 @@ public class CharacterSheetTest {
     @Test
     public void should_consume_temp_hp_first() {
         CharacterSheet character = new CharacterSheet();
-        character.setTemporaryHp(5);
+        character.setTemporaryHP(5);
         character.setMaxHP(50);
 
         character.alterHp(-10);
 
         assertEquals(45, character.getCurrentHP());
-        assertEquals(0, character.getTemporaryHp());
+        assertEquals(0, character.getTemporaryHP());
     }
 }

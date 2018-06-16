@@ -1,7 +1,15 @@
 <div class="form-group">
     <label for="name" class="col-sm-2 control-label">Name</label>
     <div class="col-sm-10">
-        <input type="text" required ng-model="character.name" class="form-control" id="name" placeholder="Character Name"/>
+        <input type="text" required ng-model="character.name" class="form-control" id="name"
+               placeholder="Character Name"/>
+    </div>
+</div>
+<div class="form-group">
+    <label for="maxHP" class="col-sm-2 control-label">Max Hp</label>
+    <div class="col-sm-2">
+        <input type="number" required ng-model="character.maxHP" min="1" class="form-control" id="maxHP"
+               placeholder="Max HP"/>
     </div>
 </div>
 <div class="form-group">
@@ -10,42 +18,126 @@
         <button type="button" class="form-control" ng-click="addNewCharClass()">Add Class</button>
     </div>
     <fieldset id="classes" class="col-sm-2" ng-repeat="(charClass,val) in character.classes">
-        <select ng-change="filterChanged(charClass, '{{charClass}}')" required class="form-control"  ng-model="charClass" ng-options="x for x in classes" placeholder="Select Classes">
+        <select ng-change="filterChanged(charClass, '{{charClass}}')" required class="form-control" ng-model="charClass"
+                ng-options="x for x in classes" placeholder="Select Classes">
         </select>
         <input class="form-control " type="number" min="1" max="20" ng-model="val.classLevel" placeholder="Level">
-        <button class="btn btn-danger" type="button" class="form-control" ng-click="removeCharClass(charClass)">Remove</button>
+        <button class="btn btn-danger" type="button" class="form-control" ng-click="removeCharClass(charClass)">Remove
+        </button>
     </fieldset>
-</div>
-<div class="form-group">
-    <label for="maxHP" class="col-sm-2 control-label">Max Hp</label>
-    <div class="col-sm-2">
-        <input type="number" required ng-model="character.maxHP" min="1" class="form-control" id="maxHP" placeholder="Max HP"/>
-    </div>
 </div>
 <div class="form-group">
     <label for="strength" class="col-sm-2 control-label">Str</label>
     <div class="col-sm-2">
-        <input type="number" required ng-model="character.stats.strength.value" min="1" max="20" class="form-control" id="strength" placeholder="Strength"/>
+        <input type="number" required ng-model="character.stats.strength.value" min="1" max="20" class="form-control"
+               id="strength" placeholder="Strength"/>
     </div>
     <label for="constitution" class="col-sm-2 control-label">Con</label>
     <div class="col-sm-2">
-        <input type="number" required ng-model="character.stats.constitution.value" min="1" max="20" class="form-control" id="constitution" placeholder="Constitution"/>
+        <input type="number" required ng-model="character.stats.constitution.value" min="1" max="20"
+               class="form-control" id="constitution" placeholder="Constitution"/>
     </div>
     <label for="dexterity" class="col-sm-2 control-label">Dex</label>
     <div class="col-sm-2">
-        <input type="number" required ng-model="character.stats.dexterity.value" min="1" max="20" class="form-control" id="dexterity" placeholder="Dexterity"/>
+        <input type="number" required ng-model="character.stats.dexterity.value" min="1" max="20" class="form-control"
+               id="dexterity" placeholder="Dexterity"/>
     </div>
     <label for="intelligence" class="col-sm-2 control-label">Int</label>
     <div class="col-sm-2">
-        <input type="number" required ng-model="character.stats.intelligence.value" min="1" max="20" class="form-control" id="intelligence" placeholder="Intelligence"/>
+        <input type="number" required ng-model="character.stats.intelligence.value" min="1" max="20"
+               class="form-control" id="intelligence" placeholder="Intelligence"/>
     </div>
     <label for="wisdom" class="col-sm-2 control-label">Wis</label>
     <div class="col-sm-2">
-        <input type="number" required ng-model="character.stats.wisdom.value" min="1" max="20" class="form-control" id="wisdom" placeholder="Wisdom"/>
+        <input type="number" required ng-model="character.stats.wisdom.value" min="1" max="20" class="form-control"
+               id="wisdom" placeholder="Wisdom"/>
     </div>
     <label for="charisma" class="col-sm-2 control-label">Cha</label>
     <div class="col-sm-2">
-        <input type="number" required ng-model="character.stats.charisma.value" min="1" max="20" class="form-control" id="charisma" placeholder="Charisma"/>
+        <input type="number" required ng-model="character.stats.charisma.value" min="1" max="20" class="form-control"
+               id="charisma" placeholder="Charisma"/>
+    </div>
+</div>
+<div class="form-group col-sm-12">
+    <label for="saves" class="col-sm-2 control-label">Save Proficiencies</label>
+    <div id="saves" class="col-sm-10">
+        <label for="strProf" class="col-sm-2 control-label">Str:
+            <input type="checkbox" class="float-right" ng-model="character.saves.strength.proficient" id="strProf"/>
+        </label>
+        <label for="conProf" class="col-sm-2 control-label">Con:
+            <input type="checkbox" class="float-right" ng-model="character.saves.constitution.proficient" id="conProf"/>
+        </label>
+        <label for="dexProf" class="col-sm-2 control-label">Dex:
+            <input type="checkbox" class="float-right" ng-model="character.saves.dexterity.proficient" id="dexProf"/>
+        </label>
+        <label for="intProf" class="col-sm-2 control-label">Int:
+            <input type="checkbox" class="float-right" ng-model="character.saves.intelligence.proficient" id="intProf"/>
+        </label>
+        <label for="wisProf" class="col-sm-2 control-label">Wis:
+            <input type="checkbox" class="float-right" ng-model="character.saves.wisdom.proficient" id="wisProf"/>
+        </label>
+        <label for="chaProf" class="col-sm-2 control-label">Cha:
+            <input type="checkbox" class="float-right" ng-model="character.saves.charisma.proficient" id="chaProf"/>
+        </label>
+    </div>
+</div>
+<div class="form-group col-sm-12">
+    <label for="skills" class="col-sm-2 control-label">Skill Proficiencies</label>
+    <div id="skills" class="col-sm-10">
+        <label for="athProf" class="col-sm-2 control-label">Athletics:
+            <input type="checkbox" class="float-right" ng-model="character.skills.athletics.proficient" id="athProf"/>
+        </label>
+        <label for="acroProf" class="col-sm-2 control-label">Acrobatics:
+            <input type="checkbox" class="float-right" ng-model="character.skills.acrobatics.proficient" id="acroProf"/>
+        </label>
+        <label for="SolProf" class="col-sm-2 control-label">Sleight of Hand:
+            <input type="checkbox" class="float-right" ng-model="character.skills.sleightOfHand.proficient" id="SolProf"/>
+        </label>
+        <label for="steaProf" class="col-sm-2 control-label">Stealth:
+            <input type="checkbox" class="float-right" ng-model="character.skills.stealth.proficient" id="steaProf"/>
+        </label>
+        <label for="arcaProf" class="col-sm-2 control-label">Arcana:
+            <input type="checkbox" class="float-right" ng-model="character.skills.arcana.proficient" id="arcaProf"/>
+        </label>
+        <label for="hisProf" class="col-sm-2 control-label">History:
+            <input type="checkbox" class="float-right" ng-model="character.skills.history.proficient" id="hisProf"/>
+        </label>
+        <label for="natProf" class="col-sm-2 control-label">Nature:
+            <input type="checkbox" class="float-right" ng-model="character.skills.nature.proficient" id="natProf"/>
+        </label>
+        <label for="invProf" class="col-sm-2 control-label">Investigation:
+            <input type="checkbox" class="float-right" ng-model="character.skills.investigation.proficient" id="invProf"/>
+        </label>
+        <label for="relProf" class="col-sm-2 control-label">Religion:
+            <input type="checkbox" class="float-right" ng-model="character.skills.religion.proficient" id="relProf"/>
+        </label>
+        <label for="aniProf" class="col-sm-2 control-label">Animal Handling:
+            <input type="checkbox" class="float-right" ng-model="character.skills.animalHandling.proficient" id="aniProf"/>
+        </label>
+        <label for="insProf" class="col-sm-2 control-label">Insight:
+            <input type="checkbox" class="float-right" ng-model="character.skills.insight.proficient" id="insProf"/>
+        </label>
+        <label for="medProf" class="col-sm-2 control-label">Medicine:
+            <input type="checkbox" class="float-right" ng-model="character.skills.medicine.proficient" id="medProf"/>
+        </label>
+        <label for="perProf" class="col-sm-2 control-label">Perception:
+            <input type="checkbox" class="float-right" ng-model="character.skills.perception.proficient" id="perProf"/>
+        </label>
+        <label for="survProf" class="col-sm-2 control-label">Survival:
+            <input type="checkbox" class="float-right" ng-model="character.skills.survival.proficient" id="survProf"/>
+        </label>
+        <label for="decProf" class="col-sm-2 control-label">Deception:
+            <input type="checkbox" class="float-right" ng-model="character.skills.deception.proficient" id="decProf"/>
+        </label>
+        <label for="intiProf" class="col-sm-2 control-label">Intimidation:
+            <input type="checkbox" class="float-right" ng-model="character.skills.intimidation.proficient" id="intiProf"/>
+        </label>
+        <label for="perfProf" class="col-sm-2 control-label">Performance:
+            <input type="checkbox" class="float-right" ng-model="character.skills.performance.proficient" id="perfProf"/>
+        </label>
+        <label for="persProf" class="col-sm-2 control-label">Persuasion:
+            <input type="checkbox" class="float-right" ng-model="character.skills.persuasion.proficient" id="persProf"/>
+        </label>
     </div>
 </div>
 <div class="form-group">

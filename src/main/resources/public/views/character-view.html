@@ -1,15 +1,113 @@
 <div class="container pad-top">
     <table class="table listtable">
         <h3>Details for {{character.name}}</h3>
+        <div>
+            <a class="btn btn-primary" ui-sref="characters">Back</a>
+            <a class="btn btn-danger" ui-sref="editCharacter({id:character.id})">Edit</a>
+        </div>
         <tr>
-            <td class="col-sm-4">Name</td>
-            <td>{{character.name}}</td>
+            <td class="col-sm-4"><b>Name</b></td>
+            <td class="col-sm-4"><b>Character Level</b></td>
+            <td class="col-sm-4"><b>Proficiency Bonus</b></td>
         </tr>
         <tr>
-            <td>Character Level</td>
-            <td>{{character.characterLevel}}</td>
+            <td class="col-sm-4">{{character.name}}</td>
+            <td class="col-sm-4">{{character.characterLevel}}</td>
+            <td class="col-sm-4">{{character.proficiencyBonus}}</td>
         </tr>
     </table>
+
+    <table class="table listtable">
+        <tr>
+            <td class="col-sm-3"><b>Max Hp</b></td>
+            <td class="col-sm-3"><b>Current Hp</b></td>
+            <td class="col-sm-3"><b>Temp Hp</b></td>
+            <td class="col-sm-3"><b>Hit die</b></td>
+        </tr>
+        <tr>
+            <td>{{character.maxHP}}</td>
+            <td>{{character.currentHP}}</td>
+            <td>{{character.temporaryHP}}</td>
+            <td>{{getHitDie(character)}}</td>
+        </tr>
+    </table>
+
+    <div>
+        <a class="btn btn-danger col-sm-4" data-toggle="modal" data-target="#hurtModal">Hurt</a>
+        <a class="btn btn-success col-sm-4" data-toggle="modal" data-target="#healModal">Heal</a>
+        <a class="btn btn-info col-sm-4" data-toggle="modal" data-target="#tempModal">Temp</a>
+    </div>
+
+    <!-- Modal -->
+    <div id="hurtModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Hurt</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id='hurtForm'>
+                        <div>
+                            <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
+                                   ng-model="damage">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" ng-click="alterHp(-damage)" data-dismiss="modal" class="btn btn-danger">
+                        Ouch!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="healModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Heal</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id='healForm'>
+                        <div>
+                            <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
+                                   ng-model="heal">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" ng-click="alterHp(heal)" data-dismiss="modal" class="btn btn-success">Heal!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tempModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Temp Hp</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
+                               ng-model="temp">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" ng-click="setTempHp(temp)" data-dismiss="modal" class="btn btn-info">Set Temp
+                        Hp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="stat-table" class="table-responsive col-xs-6">
         <table class="table listtable">
@@ -64,79 +162,265 @@
             </tr>
         </table>
     </div>
-    <div *ngIf="character.saves" id="save-table"class="table-responsive col-xs-6">
-            <table class="table listtable">
-                <h4>Saves</h4>
-                <td>Name</td>
-                <td></td>
+    <div *ngIf="character.saves" id="save-table" class="table-responsive col-xs-6">
+        <table class="table listtable">
+            <h4>Saves</h4>
+            <td>Name</td>
+            <td>Modifier</td>
+            <td class="float-right">
+                Proficient?
+            </td>
+            <tr>
+                <td>Strength:</td>
                 <td class="float-right">
-                    Proficient?
+                    {{getSaveModifier('strength', character)}}
                 </td>
-                <tr>
-                    <td>Strength:</td>
-                    <td class="float-right">
-                        {{getSaveModifier('strength', character)}}
-                    </td>
-                    <td>
-                        <span ng-if="character.saves.strength.proficient" class="glyphicon glyphicon-ok"></span>
-                        <span ng-if="!character.saves.strength.proficient" class="glyphicon glyphicon-remove"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Constitution:</td>
-                    <td>
-                        {{getSaveModifier('constitution', character)}}
-                    </td>
-                    <td>
-                        <span ng-if="character.saves.constitution.proficient" class="glyphicon glyphicon-ok"></span>
-                        <span ng-if="!character.saves.constitution.proficient" class="glyphicon glyphicon-remove"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Dexterity:</td>
-                    <td class="float-right">
-                        {{getSaveModifier('dexterity', character)}}
-                    </td>
-                    <td>
-                        <span ng-if="character.saves.dexterity.proficient" class="glyphicon glyphicon-ok"></span>
-                        <span ng-if="!character.saves.dexterity.proficient" class="glyphicon glyphicon-remove"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Intelligence:</td>
-                    <td class="float-right">
-                        {{getSaveModifier('intelligence', character)}}
-                    </td>
-                    <td>
-                        <span ng-if="character.saves.intelligence.proficient" class="glyphicon glyphicon-ok"></span>
-                        <span ng-if="!character.saves.intelligence.proficient" class="glyphicon glyphicon-remove"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Wisdom:</td>
-                    <td class="float-right">
-                        {{getSaveModifier('wisdom', character)}}
-                    </td>
-                    <td>
-                        <span ng-if="character.saves.wisdom.proficient" class="glyphicon glyphicon-ok"></span>
-                        <span ng-if="!character.saves.wisdom.proficient" class="glyphicon glyphicon-remove"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Charisma:</td>
-                    <td class="float-right">
-                        {{getSaveModifier('charisma', character)}}
-                    </td>
-                    <td>
-                        <span ng-if="character.saves.charisma.proficient" class="glyphicon glyphicon-ok"></span>
-                        <span ng-if="!character.saves.charisma.proficient" class="glyphicon glyphicon-remove"></span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    <div>
-        <a class="btn btn-primary" ui-sref="characters">Back</a>
-        <a class="btn btn-danger" ui-sref="editCharacter({id:character.id})">Edit</a>
+                <td>
+                    <span ng-if="character.saves.strength.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.saves.strength.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Constitution:</td>
+                <td>
+                    {{getSaveModifier('constitution', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.saves.constitution.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.saves.constitution.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Dexterity:</td>
+                <td class="float-right">
+                    {{getSaveModifier('dexterity', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.saves.dexterity.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.saves.dexterity.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Intelligence:</td>
+                <td class="float-right">
+                    {{getSaveModifier('intelligence', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.saves.intelligence.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.saves.intelligence.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Wisdom:</td>
+                <td class="float-right">
+                    {{getSaveModifier('wisdom', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.saves.wisdom.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.saves.wisdom.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Charisma:</td>
+                <td class="float-right">
+                    {{getSaveModifier('charisma', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.saves.charisma.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.saves.charisma.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+        </table>
     </div>
+    <div *ngIf="character.skills" id="skill-table" class="table-responsive col-xs-6">
+        <table class="table listtable">
+            <h4>Saves</h4>
+            <td>Name</td>
+            <td>Modifier</td>
+            <td class="float-right">
+                Proficient?
+            </td>
+            <tr>
+                <td>Athletics:</td>
+                <td class="float-right">
+                    {{getSkillModifier('athletics', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.athletics.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.saves.athletics.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Acrobatics:</td>
+                <td class="float-right">
+                    {{getSkillModifier('acrobatics', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.acrobatics.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.acrobatics.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Sleight of Hand:</td>
+                <td class="float-right">
+                    {{getSkillModifier('sleightOfHand', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.sleightOfHand.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.sleightOfHand.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Stealth:</td>
+                <td class="float-right">
+                    {{getSkillModifier('stealth', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.stealth.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.stealth.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Arcana:</td>
+                <td class="float-right">
+                    {{getSkillModifier('arcana', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.arcana.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.arcana.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>History:</td>
+                <td class="float-right">
+                    {{getSkillModifier('history', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.history.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.history.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Investigation:</td>
+                <td class="float-right">
+                    {{getSkillModifier('investigation', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.investigation.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.investigation.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Nature:</td>
+                <td class="float-right">
+                    {{getSkillModifier('nature', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.nature.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.nature.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Religion:</td>
+                <td class="float-right">
+                    {{getSkillModifier('religion', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.religion.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.religion.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Animal Handling:</td>
+                <td class="float-right">
+                    {{getSkillModifier('animalHandling', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.animalHandling.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.animalHandling.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Insight:</td>
+                <td class="float-right">
+                    {{getSkillModifier('insight', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.insight.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.insight.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Medicine:</td>
+                <td class="float-right">
+                    {{getSkillModifier('medicine', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.medicine.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.medicine.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Perception:</td>
+                <td class="float-right">
+                    {{getSkillModifier('perception', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.perception.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.perception.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Survival:</td>
+                <td class="float-right">
+                    {{getSkillModifier('survival', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.survival.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.survival.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Deception:</td>
+                <td class="float-right">
+                    {{getSkillModifier('deception', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.deception.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.deception.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Intimidation:</td>
+                <td class="float-right">
+                    {{getSkillModifier('intimidation', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.intimidation.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.intimidation.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Performance:</td>
+                <td class="float-right">
+                    {{getSkillModifier('performance', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.performance.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.performance.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Persuasion:</td>
+                <td class="float-right">
+                    {{getSkillModifier('persuasion', character)}}
+                </td>
+                <td>
+                    <span ng-if="character.skills.persuasion.proficient" class="glyphicon glyphicon-ok"></span>
+                    <span ng-if="!character.skills.persuasion.proficient" class="glyphicon glyphicon-remove"></span>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
+

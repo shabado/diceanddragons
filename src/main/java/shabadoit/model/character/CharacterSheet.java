@@ -18,7 +18,6 @@ import shabadoit.model.stats.StatBlock;
 import shabadoit.serializer.CharacterSheetDeserializer;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -46,7 +45,7 @@ public class CharacterSheet {
     @Positive(message = "{validation.integer.positive}")
     private int maxHP;
     @PositiveOrZero(message = "{validation.integer.notNegative}")
-    private int temporaryHp;
+    private int temporaryHP;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Setter(AccessLevel.NONE)
     @Valid
@@ -143,12 +142,12 @@ public class CharacterSheet {
     }
 
     private void inflictDamage(int damage) {
-        if (temporaryHp > 0) {
-            int temp = temporaryHp + damage;
+        if (temporaryHP > 0) {
+            int temp = temporaryHP + damage;
             if (temp > 0) {
-                temporaryHp = temp;
+                temporaryHP = temp;
             } else {
-                temporaryHp = 0;
+                temporaryHP = 0;
                 inflictDamage(temp);
             }
         } else {

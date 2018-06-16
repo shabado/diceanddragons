@@ -14,4 +14,6 @@ public interface CharacterService {
     void deleteById(String id);
     Optional<CharacterSheet> getById(String id);
     CharacterSheet levelUp(String id, CharacterClass charClass);
+    CharacterSheet setTempHp(String id, int tempHp);
+    CharacterSheet alterHp(String id, int change);
 }

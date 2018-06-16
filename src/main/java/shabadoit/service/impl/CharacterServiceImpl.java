@@ -85,4 +85,33 @@ public class CharacterServiceImpl implements CharacterService {
         character.get().levelUp(charClass);
         return characterRepository.save(character.get());
     }
+
+    //TODO unit test
+    @Override
+    public CharacterSheet setTempHp(String id, int tempHp) {
+        Optional<CharacterSheet> character = getById(id);
+        if (!character.isPresent()) {
+            throw new ResourceNotFoundException("Character with Id \" + id + \" not found.\"");
+        }
+
+        if (tempHp > 0) {
+            character.get().setTemporaryHP(tempHp);
+        } else {
+            character.get().setTemporaryHP(0);
+        }
+        return characterRepository.save(character.get());
+    }
+
+    //TODO unit test
+    @Override
+    public CharacterSheet alterHp(String id, int change) {
+        Optional<CharacterSheet> character = getById(id);
+        if (!character.isPresent()) {
+            throw new ResourceNotFoundException("Character with Id \" + id + \" not found.\"");
+        }
+
+        character.get().alterHp(change);
+
+        return characterRepository.save(character.get());
+    }
 }

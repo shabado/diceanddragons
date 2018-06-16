@@ -40,7 +40,7 @@ public class CharacterController {
     public ResponseEntity<CharacterSheet> getById(@PathVariable String id) {
         Optional<CharacterSheet> character = characterService.getById(id);
 
-        if(character.isPresent()){
+        if (character.isPresent()) {
             return ResponseEntity.ok(character.get());
         } else {
             throw new ResourceNotFoundException("Character with Id " + id + " not found.");
@@ -64,10 +64,22 @@ public class CharacterController {
         characterService.deleteById(id);
     }
 
-    @RequestMapping(value = "{id}/levelup/{charClass}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/levelup/{charClass}", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public CharacterSheet levelUp(@PathVariable String id,
-                        @PathVariable CharacterClass charClass) {
+                                  @PathVariable CharacterClass charClass) {
         return characterService.levelUp(id, charClass);
+    }
+
+    @RequestMapping(value = "/{id}/alterHp", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public CharacterSheet alterHp(@PathVariable String id, @RequestBody int change) {
+        return characterService.alterHp(id, change);
+    }
+
+    @RequestMapping(value = "/{id}/setTempHp", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public CharacterSheet setTempUp(@PathVariable String id, @RequestBody int tempHp) {
+        return characterService.setTempHp(id, tempHp);
     }
 }

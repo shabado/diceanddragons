@@ -20,6 +20,12 @@ angular.module('app.charControllers', []).controller('CharacterListController', 
         return dice;
     }
 
+    $scope.gainExp = function(experience) {
+        let newExpValue = +experience + +$scope.character.experience;
+        $scope.character.experience = newExpValue;
+        $scope.character.$update();
+    }
+
     $scope.alterHp = function (number) {
         $scope.character = CharUpdater.alterHp.go(number, {id: $stateParams.id, hp: number});
     }

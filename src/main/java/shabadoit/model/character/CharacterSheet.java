@@ -38,6 +38,8 @@ public class CharacterSheet {
     private String race;
     @NotNull(message = "{validation.field.required}")
     private String name;
+    private int experience;
+    private int armourClass;
     @Setter(AccessLevel.NONE)
     private int proficiencyBonus;
     @PositiveOrZero(message = "{validation.integer.notNegative}")

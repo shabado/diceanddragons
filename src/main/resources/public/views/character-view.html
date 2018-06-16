@@ -1,32 +1,38 @@
 <div class="container pad-top">
     <table class="table listtable">
-        <h3>Details for {{character.name}}</h3>
+        <h3>Details for {{character.name}}
+            <a class="btn btn-danger pull-right" ui-sref="editCharacter({id:character.id})">Edit</a>
+            <a class="btn btn-primary pull-right" ui-sref="characters">Back</a>
+        </h3>
         <div>
-            <a class="btn btn-primary" ui-sref="characters">Back</a>
-            <a class="btn btn-danger" ui-sref="editCharacter({id:character.id})">Edit</a>
+            <a class="btn btn-info col-sm-3" data-toggle="modal" data-target="#expModal">Gain Experience!</a>
         </div>
         <tr>
-            <td class="col-sm-4"><b>Name</b></td>
-            <td class="col-sm-4"><b>Character Level</b></td>
-            <td class="col-sm-4"><b>Proficiency Bonus</b></td>
+            <td class="col-sm-3"><b>Name</b></td>
+            <td class="col-sm-3"><b>Character Level</b></td>
+            <td class="col-sm-3"><b>Proficiency Bonus</b></td>
+            <td class="col-sm-3"><b>Experience</b></td>
         </tr>
         <tr>
-            <td class="col-sm-4">{{character.name}}</td>
-            <td class="col-sm-4">{{character.characterLevel}}</td>
-            <td class="col-sm-4">{{character.proficiencyBonus}}</td>
+            <td class="col-sm-3">{{character.name}}</td>
+            <td class="col-sm-3">{{character.characterLevel}}</td>
+            <td class="col-sm-3">{{character.proficiencyBonus}}</td>
+            <td class="col-sm-3">{{character.experience}}</td>
         </tr>
     </table>
 
     <table class="table listtable">
         <tr>
-            <td class="col-sm-3"><b>Max Hp</b></td>
+            <td class="col-sm-3"><b>Armor class</b></td>
             <td class="col-sm-3"><b>Current Hp</b></td>
-            <td class="col-sm-3"><b>Temp Hp</b></td>
-            <td class="col-sm-3"><b>Hit die</b></td>
+            <td class="col-sm-2"><b>Max Hp</b></td>
+            <td class="col-sm-2"><b>Temp Hp</b></td>
+            <td class="col-sm-2"><b>Hit die</b></td>
         </tr>
         <tr>
-            <td>{{character.maxHP}}</td>
+            <td>{{character.armourClass}}</td>
             <td>{{character.currentHP}}</td>
+            <td>{{character.maxHP}}</td>
             <td>{{character.temporaryHP}}</td>
             <td>{{getHitDie(character)}}</td>
         </tr>
@@ -36,77 +42,6 @@
         <a class="btn btn-danger col-sm-4" data-toggle="modal" data-target="#hurtModal">Hurt</a>
         <a class="btn btn-success col-sm-4" data-toggle="modal" data-target="#healModal">Heal</a>
         <a class="btn btn-info col-sm-4" data-toggle="modal" data-target="#tempModal">Temp</a>
-    </div>
-
-    <!-- Modal -->
-    <div id="hurtModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Hurt</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" id='hurtForm'>
-                        <div>
-                            <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
-                                   ng-model="damage">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" ng-click="alterHp(-damage)" data-dismiss="modal" class="btn btn-danger">
-                        Ouch!
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="healModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Heal</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" id='healForm'>
-                        <div>
-                            <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
-                                   ng-model="heal">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" ng-click="alterHp(heal)" data-dismiss="modal" class="btn btn-success">Heal!
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="tempModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Temp Hp</h4>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
-                               ng-model="temp">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" ng-click="setTempHp(temp)" data-dismiss="modal" class="btn btn-info">Set Temp
-                        Hp
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="stat-table" class="table-responsive col-xs-6">
@@ -423,4 +358,98 @@
         </table>
     </div>
 </div>
+
+<!-- Modal -->
+<div id="hurtModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Hurt</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id='hurtForm'>
+                    <div>
+                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
+                               ng-model="damage">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="alterHp(-damage)" data-dismiss="modal" class="btn btn-danger">
+                    Ouch!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="healModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Heal</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id='healForm'>
+                    <div>
+                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
+                               ng-model="heal">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="alterHp(heal)" data-dismiss="modal" class="btn btn-success">Heal!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="tempModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Temp Hp</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
+                           ng-model="temp">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="setTempHp(temp)" data-dismiss="modal" class="btn btn-info">Set Temp
+                    Hp
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="expModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Experience</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
+                           ng-model="experience">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="gainExp(experience)" data-dismiss="modal" class="btn btn-info">Gain Experience!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 

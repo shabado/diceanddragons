@@ -50,6 +50,8 @@ public class CharacterSheetDeserializer extends StdDeserializer<CharacterSheet> 
         }
         if (deserializedCharacter.getSkills() == null) {
             deserializedCharacter.setSkills(new SkillBlock());
+        } else {
+            deserializedCharacter.getSkills().setStats();
         }
 
         return deserializedCharacter;

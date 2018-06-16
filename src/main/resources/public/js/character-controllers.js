@@ -20,7 +20,7 @@ angular.module('app.charControllers', []).controller('CharacterListController', 
         return dice;
     }
 
-    $scope.gainExp = function(experience) {
+    $scope.gainExp = function (experience) {
         let newExpValue = +experience + +$scope.character.experience;
         $scope.character.experience = newExpValue;
         $scope.character.$update();
@@ -138,5 +138,5 @@ function getStatModifier(stat) {
 }
 
 function getClasses() {
-    return ["Bard", "Cleric", "Druid", "Paladin", "Ranger", "Sorcerer", "Warlock", "Wizard"];
+    return ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"];
 }

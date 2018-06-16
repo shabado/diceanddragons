@@ -26,4 +26,26 @@ public class SkillBlock {
     public SkillBlock() {
         //jackson constructor
     }
+
+    //If the object is created with missing attributes, this will ensure the stats are properly set
+    public void setStats() {
+        acrobatics.setStat(StatName.DEXTERITY);
+        animalHandling.setStat(StatName.WISDOM);
+        arcana.setStat(StatName.INTELLIGENCE);
+        athletics.setStat(StatName.STRENGTH);
+        deception.setStat(StatName.CHARISMA);
+        history.setStat(StatName.INTELLIGENCE);
+        insight.setStat(StatName.WISDOM);
+        intimidation.setStat(StatName.CHARISMA);
+        investigation.setStat(StatName.INTELLIGENCE);
+        medicine.setStat(StatName.WISDOM);
+        nature.setStat(StatName.INTELLIGENCE);
+        perception.setStat(StatName.WISDOM);
+        performance.setStat(StatName.CHARISMA);
+        persuasion.setStat(StatName.CHARISMA);
+        religion.setStat(StatName.INTELLIGENCE);
+        sleightOfHand.setStat(StatName.DEXTERITY);
+        stealth.setStat(StatName.DEXTERITY);
+        survival.setStat(StatName.WISDOM);
+    }
 }

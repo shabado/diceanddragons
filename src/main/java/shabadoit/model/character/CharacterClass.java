@@ -3,7 +3,7 @@ package shabadoit.model.character;
 import com.fasterxml.jackson.annotation.JsonValue;
 import shabadoit.model.stats.StatName;
 
-public enum CharacterClass {
+public enum  CharacterClass {
     BARBARIAN("Barbarian", HitDie.DTWELVE, null),
     BARD("Bard", HitDie.DEIGHT, StatName.CHARISMA),
     CLERIC("Cleric", HitDie.DEIGHT, StatName.WISDOM),

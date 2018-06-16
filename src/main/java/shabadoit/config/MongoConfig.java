@@ -1,6 +1,7 @@
 package shabadoit.config;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 //TODO revert this to !test when ready to deploy somewhere
-@Profile("dev")
+@Profile("!test")
 @Configuration
 public class MongoConfig extends AbstractMongoConfiguration {
 
@@ -25,7 +26,9 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-        return new MongoClient(environment.getRequiredProperty("mongodb.host"), Integer.parseInt(environment.getRequiredProperty("mongodb.port")));
+        String password = environment.getRequiredProperty("mongodb.password");
+        MongoClientURI uri = new MongoClientURI("mongodb+srv://danddapp:"+password+"@diceanddragons-yrn1p.mongodb.net/dandd?retryWrites=true");
+        return new MongoClient(uri);
     }
 
     @Bean

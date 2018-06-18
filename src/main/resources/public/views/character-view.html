@@ -359,93 +359,98 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div id="hurtModal" class="modal fade" role="dialog">
+<!-- Modals -->
+<div class="modal fade" id="hurtModal" role="dialog">
     <div class="modal-dialog">
-        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Hurt</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" id='hurtForm'>
-                    <div>
-                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
+                <form role="form" name="hurtForm">
+                    <div class="form-group">
+                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
                                ng-model="damage">
                     </div>
+                    <div class="modal-footer">
+                        <button type="submit" ng-click="alterHp(-damage, hurtForm.$valid)"
+                                class="btn btn-danger">Ouch!
+                        </button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="alterHp(-damage)" data-dismiss="modal" class="btn btn-danger">
-                    Ouch!
-                </button>
             </div>
         </div>
     </div>
 </div>
-<div id="healModal" class="modal fade" role="dialog">
+
+<div class="modal fade" id="healModal" role="dialog">
     <div class="modal-dialog">
-        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Heal</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" id='healForm'>
-                    <div>
-                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control"
+                <form role="form" name="healForm">
+                    <div class="form-group">
+                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
                                ng-model="heal">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" ng-click="alterHp(heal, healForm.$valid)"
+                                class="btn btn-success">Heal!
+                        </button>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="alterHp(heal)" data-dismiss="modal" class="btn btn-success">Heal!
-                </button>
-            </div>
         </div>
     </div>
 </div>
-<div id="tempModal" class="modal fade" role="dialog">
+
+<div class="modal fade" id="tempModal" role="dialog">
     <div class="modal-dialog">
-        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Temp Hp</h4>
+                <h4 class="modal-title">Temporary Hp</h4>
             </div>
             <div class="modal-body">
-                <div>
-                    <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
-                           ng-model="temp">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="setTempHp(temp)" data-dismiss="modal" class="btn btn-info">Set Temp
-                    Hp
-                </button>
+                <form role="form" name="tempForm">
+                    <div class="form-group">
+                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
+                               ng-model="temp">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" ng-click="setTempHp(temp, tempForm.$valid)"
+                                class="btn btn-info">Set Temp Hp
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-<div id="expModal" class="modal fade" role="dialog">
+
+<div class="modal fade" id="expModal" role="dialog">
     <div class="modal-dialog">
-        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Experience</h4>
             </div>
             <div class="modal-body">
-                <div>
-                    <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
-                           ng-model="experience">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="gainExp(experience)" data-dismiss="modal" class="btn btn-info">Gain Experience!
-                </button>
+                <form role="form" name="expForm">
+                    <div class="form-group">
+                        <input type="number" min="0" placeholder="0" ng-required="true" class="form-control col-sm-2"
+                               ng-model="experience">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" ng-click="gainExp(experience, expForm.$valid)"
+                                class="btn btn-info">Gain Experience!
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -20,18 +20,28 @@ angular.module('app.charControllers', []).controller('CharacterListController', 
         return dice;
     }
 
-    $scope.gainExp = function (experience) {
-        let newExpValue = +experience + +$scope.character.experience;
-        $scope.character.experience = newExpValue;
-        $scope.character.$update();
+    $scope.gainExp = function (experience, valid) {
+        if(valid) {
+            let newExpValue = +experience + +$scope.character.experience;
+            $scope.character.experience = newExpValue;
+            $scope.character.$update();
+            $('#expModal').modal('hide');
+        }
     }
 
-    $scope.alterHp = function (number) {
-        $scope.character = CharUpdater.alterHp.go(number, {id: $stateParams.id, hp: number});
+    $scope.alterHp = function (number, valid) {
+        if (valid) {
+            $scope.character = CharUpdater.alterHp.go(number, {id: $stateParams.id, hp: number});
+            $('#healModal').modal('hide');
+            $('#hurtModal').modal('hide');
+        }
     }
 
-    $scope.setTempHp = function (number) {
-        $scope.character = CharUpdater.setTempHp.go(number, {id: $stateParams.id, hp: number});
+    $scope.setTempHp = function (number, valid) {
+        if (valid){
+            $scope.character = CharUpdater.setTempHp.go(number, {id: $stateParams.id, hp: number});
+            $('#tempModal').modal('hide');
+        }
     }
 
     $scope.getModifier = function (stat) {
